@@ -13,6 +13,11 @@ int main()
     std::vector<std::string> vstrImageFilenamesD;
     std::vector<double> vTimestamps;
     datasetImg->ReadImagesAssociationFile(vstrImageFilenamesRGB,vstrImageFilenamesD,vTimestamps);
+    if(datasetImg!=NULL)
+    {
+        delete datasetImg;
+        datasetImg = NULL;
+    }
     if(vstrImageFilenamesRGB.empty())
     {
         cerr << "No images found in provided path." << endl;

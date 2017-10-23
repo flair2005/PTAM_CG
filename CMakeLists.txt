@@ -2,7 +2,7 @@ project(PTAM-GS)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall -g")
 
 # OpenCV
 find_package( OpenCV 3.1 REQUIRED )
@@ -44,5 +44,19 @@ if(Pangolin_FOUND)
     link_libraries( ${Pangolin_LIBRARIES} )
 endif()
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+################ PTAM-GS ################
+include_directories(${PROJECT_SOURCE_DIR}/include)
+set( SRC_LIST_PTAM
+    ${PROJECT_SOURCE_DIR}/src/System.cpp
+    ${PROJECT_SOURCE_DIR}/src/VideoSource.cpp
+    ${PROJECT_SOURCE_DIR}/src/GLWindowPangolin.cpp )
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_PTAM})
 
+################ gtest ################
+enable_testing()
+find_package(GTest REQUIRED)
+if(GTest_FOUND)
+    include_directories(${GTEST_INCLUDE_DIRS})
+endif()
+ADD_SUBDIRECTORY(UnitTest)
+ADD_TEST(NAME ./UnitTest/UnitTest.run COMMAND ./UnitTest/UnitTest.run)
