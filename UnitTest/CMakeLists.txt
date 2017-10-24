@@ -4,5 +4,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 ADD_EXECUTABLE( UnitTest.run
     gtest_main.cpp
     TVideoSource.cpp
+    TImgProc.cpp
+    TKeyFrame.cpp
     ${SRC_LIST_PTAM} )
 TARGET_LINK_LIBRARIES(UnitTest.run gtest pthread)

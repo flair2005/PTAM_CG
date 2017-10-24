@@ -49,7 +49,10 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 set( SRC_LIST_PTAM
     ${PROJECT_SOURCE_DIR}/src/System.cpp
     ${PROJECT_SOURCE_DIR}/src/VideoSource.cpp
-    ${PROJECT_SOURCE_DIR}/src/GLWindowPangolin.cpp )
+    ${PROJECT_SOURCE_DIR}/src/GLWindowPangolin.cpp
+    ${PROJECT_SOURCE_DIR}/src/KeyFrame.cpp
+    ${PROJECT_SOURCE_DIR}/src/Tracker.cpp
+    ${PROJECT_SOURCE_DIR}/src/ImgProc.cpp )
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_PTAM})
 
 ################ gtest ################

@@ -1,45 +1,54 @@
-#ifndef __GLWindowPangolin_H
-#define __GLWindowPangolin_H
+#pragma once
 
 #include <string>
+#include <vector>
 
 #include <GL/glew.h>
-
 #include <pangolin/pangolin.h>
-
 #include <opencv2/opencv.hpp>
 
 class GLWindowPangolin
 {
 public:
-    unsigned int mWidth;
-    unsigned int mHeight;
-
-    GLWindowPangolin(const std::string title, unsigned int width, unsigned int height):
-        mWidth(width),
-        mHeight(height)
+    struct RGB
     {
-        //Create OpenGL window in single line
-        pangolin::CreateWindowAndBind(title,width,height);
+        float r;
+        float g;
+        float b;
+        RGB(){}
+        RGB(float red, float green, float blue):r(red),g(green),b(blue){}
+    };
 
-        // 3D Mouse handler requires depth testing to be enabled
-        glEnable(GL_DEPTH_TEST);
-    }
+    struct Size
+    {
+        unsigned int width;
+        unsigned int height;
+        Size(){}
+        Size(unsigned int w,unsigned int h):width(w),height(h){}
+        Size(const Size &size):width(size.width),height(size.height){}
+    };
+
+public:
+    GLWindowPangolin(){}
+    GLWindowPangolin(const std::string title, Size sizeWindow);
+
+    void SetupViewport();
+    void SetupVideoOrtho();
+    void SetupVideoRasterPosAndZoom();
 
     bool LoadTextures(cv::Mat matImg, GLuint texture);
+    void DrawTexture2DRGB(const cv::Mat &imgRGB);
+    void RenderTextureToViewport();
 
-    void DisplayImage(const cv::Mat &image,
-                      pangolin::GlTexture &imgTexture,
-                      pangolin::OpenGlRenderState &s_cam,
-                      pangolin::View &d_cam,
-                      pangolin::View &d_image);
-
+    void DrawPoints2f(const std::vector<cv::Point2f> &points, RGB rgb, float size);
     void DrawOrigeAxis();
 
-    void Clear()
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-};
+    inline void Clear(){ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+    inline void EndFrame(){ pangolin::FinishFrame(); }
 
-#endif
+private:
+    Size mSizeWin;
+    Size mSizeVideo;
+    RGB mRGB;
+    pangolin::GlTexture mTexture;
+};
