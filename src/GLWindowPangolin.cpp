@@ -46,6 +46,11 @@ bool GLWindowPangolin::LoadTextures(cv::Mat matImg, GLuint texture)
     return Status;
 }
 
+void GLWindowPangolin::DrawTexture2DGray(const cv::Mat &imgGray)
+{
+    mTexture.Upload(imgGray.data,GL_LUMINANCE,GL_UNSIGNED_BYTE);//upload image to GPU
+}
+
 void GLWindowPangolin::DrawTexture2DRGB(const cv::Mat &imgRGB)
 {
     mTexture.Upload(imgRGB.data,GL_RGB,GL_UNSIGNED_BYTE);//upload image to GPU

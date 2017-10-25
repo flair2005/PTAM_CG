@@ -39,6 +39,7 @@ public:
     void SetupVideoRasterPosAndZoom();
 
     bool LoadTextures(cv::Mat matImg, GLuint texture);
+    void DrawTexture2DGray(const cv::Mat &imgGray);
     void DrawTexture2DRGB(const cv::Mat &imgRGB);
     void RenderTextureToViewport();
 

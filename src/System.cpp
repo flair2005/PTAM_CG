@@ -16,7 +16,7 @@ System::System()
 void System::Run()
 {
     ImageDataSet *datasetImg = new ImageDataSet("/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
-                                                "/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/rgb.txt");
+                                                "/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
     std::vector<std::string> vstrImageFilenamesRGB;
     std::vector<std::string> vstrImageFilenamesD;
     std::vector<double> vTimestamps;
@@ -41,7 +41,6 @@ void System::Run()
 
     for(unsigned int ni=0; ni<vstrImageFilenamesRGB.size() && !pangolin::ShouldQuit(); ++ni)
     {
-        std::cout << vstrImageFilenamesRGB[ni] << std::endl;
         cv::Mat imgBGR = cv::imread(vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
         if(imgBGR.empty())
         {
@@ -57,14 +56,14 @@ void System::Run()
         glwindowPangolin.SetupVideoRasterPosAndZoom();
 
         glwindowPangolin.Clear();
-        glwindowPangolin.DrawTexture2DRGB(imgRGB);
+        glwindowPangolin.DrawTexture2DGray(imgBW);
 
         Update(imgBW,imgRGB);
 
         glwindowPangolin.RenderTextureToViewport();
         glwindowPangolin.EndFrame();
 
-        usleep(30000);
+        usleep(40000);
         if(ni == vstrImageFilenamesRGB.size()-1)
         {
             ni=0;
