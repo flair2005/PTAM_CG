@@ -2,8 +2,8 @@
 #ifndef __Tracker_H
 #define __Tracker_H
 
-#include "MiniPatch.h"
 #include "KeyFrame.h"
+#include "ImgProc.h"
 
 struct Trail    // This struct is used for initial correspondences of the first stereo pair.
 {

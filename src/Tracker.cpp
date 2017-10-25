@@ -1,6 +1,5 @@
 #include "Tracker.h"
 #include "GLWindowPangolin.h"
-
 #include <utility>
 
 Tracker::Tracker()
@@ -17,12 +16,13 @@ void Tracker::TrackFrame(cv::Mat imgBW, bool bDraw)
 
     mnFrame++;
 
-    if(false)
+    if(true)
     {
         GLWindowPangolin pangolinWin;
         pangolinWin.DrawPoints2f(mCurrentKF.aLevels[0].vCorners, GLWindowPangolin::RGB(1,0,1), 1.0f);
     }
 
+    std::cout << "mnFrame: " << mnFrame << std::endl;
     TrackForInitialMap();
 }
 
@@ -52,15 +52,14 @@ void Tracker::TrackForInitialMap()
             return;
         }
 
-        if(mnFrame==12)
-        {
+//        if(mnFrame==12)
+//        {
 //            vector<pair<ImageRef, ImageRef> > vMatches;   // This is the format the mapmaker wants for the stereo pairs
 //            for(list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
 //                vMatches.push_back(pair<ImageRef, ImageRef>(i->irInitialPos,i->irCurrentPos));
 //            mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
-            exit(1);
-            mnInitialStage = TRAIL_TRACKING_COMPLETE;
-        }
+//            mnInitialStage = TRAIL_TRACKING_COMPLETE;
+//        }
     }
 
 }
@@ -137,7 +136,7 @@ int Tracker::TrailTracking_Advance()
             cv::Point2f ptBackWardsFound = ptEnd;
             bFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners);
             cv::Point2f diffPts = ptBackWardsFound - ptStart;
-            if(diffPts.dot(diffPts) > 2)
+            if(diffPts.dot(diffPts) > 5)
                 bFound = false;
             trail.ptCurrentPos = ptEnd;
             nGoodTrails++;

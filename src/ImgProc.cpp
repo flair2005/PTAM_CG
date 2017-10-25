@@ -2,7 +2,7 @@
 
 #include <vector>
 
-int ImgProc::DetectFASTCorners10(const cv::Mat &srcImage, std::vector<cv::Point2f> &vecKeyPoints, const int &threshold)
+int ImgProc::DetectFASTCorners(const cv::Mat &srcImage, std::vector<cv::Point2f> &vecKeyPoints, const int &threshold, bool nonmaxSuppression)
 {
     if(!srcImage.data)
     {
@@ -18,7 +18,7 @@ int ImgProc::DetectFASTCorners10(const cv::Mat &srcImage, std::vector<cv::Point2
         srcImage.copyTo(srcGrayImage);
     }
     std::vector<cv::KeyPoint>  vecKeyPts;
-    cv::FAST(srcGrayImage,vecKeyPts,threshold,true);//non-maximum suppression is applied
+    cv::FAST(srcGrayImage,vecKeyPts,threshold,nonmaxSuppression);
     unsigned int nSize = vecKeyPts.size();
     vecKeyPoints.resize(nSize);
     for(unsigned int i=0; i<nSize; ++i)
@@ -48,8 +48,9 @@ double ImgProc::FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCe
     for(ir.y = rectBox.y; ir.y<=rectBox.y+rectBox.height; ir.y++)
         for(ir.x = rectBox.x; ir.x<=rectBox.x+rectBox.width; ir.x++)
         {
-            double dx = image.at<double>(ir + cv::Point2i(1,0)) - image.at<double>(ir - cv::Point2i(1,0));
-            double dy = image.at<double>(ir + cv::Point2i(0,1)) - image.at<double>(ir - cv::Point2i(0,1));
+            double dx = image.at<uchar>(ir + cv::Point2i(1,0)) - image.at<uchar>(ir - cv::Point2i(1,0));
+            double dy = image.at<uchar>(ir + cv::Point2i(0,1)) - image.at<uchar>(ir - cv::Point2i(0,1));
+            //std::cout << "dx,dy: " << dx << "," << dy << std::endl;
             dXX += dx*dx;
             dYY += dy*dy;
             dXY += dx*dy;

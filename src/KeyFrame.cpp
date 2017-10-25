@@ -18,27 +18,19 @@ void KeyFrame::MakeKeyFrame_Lite(cv::Mat &img)
         lev.vMaxCorners.clear();
         if(i == 0)
         {
-            ImgProc::DetectFASTCorners10(lev.im, lev.vCorners, 10);
-            lev.vMaxCorners.resize(lev.vCorners.size());
-            lev.vMaxCorners.assign(lev.vCorners.begin(),lev.vCorners.end());
+            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
         }
         if(i == 1)
         {
-            ImgProc::DetectFASTCorners10(lev.im, lev.vCorners, 15);
-            lev.vMaxCorners.resize(lev.vCorners.size());
-            lev.vMaxCorners.assign(lev.vCorners.begin(),lev.vCorners.end());
+            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
         }
         if(i == 2)
         {
-            ImgProc::DetectFASTCorners10(lev.im, lev.vCorners, 15);
-            lev.vMaxCorners.resize(lev.vCorners.size());
-            lev.vMaxCorners.assign(lev.vCorners.begin(),lev.vCorners.end());
+            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
         }
         if(i == 3)
         {
-            ImgProc::DetectFASTCorners10(lev.im, lev.vCorners, 10);
-            lev.vMaxCorners.resize(lev.vCorners.size());
-            lev.vMaxCorners.assign(lev.vCorners.begin(),lev.vCorners.end());
+            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
         }
         //generate row LUT
         unsigned int v=0;
@@ -57,11 +49,13 @@ void KeyFrame::MakeKeyFrame_Rest()
     for(unsigned int l=0; l<LEVELS; ++l)
     {
         Level &lev = aLevels[l];
+        ImgProc::DetectFASTCorners(lev.im, lev.vMaxCorners, 10, true);
         for(std::vector<cv::Point2f>::iterator i=lev.vMaxCorners.begin(); i!=lev.vMaxCorners.end(); i++)
         {
             if(!ImgProc::IsInImageWithBorder(lev.im,*i, 10))
                 continue;
-            double dSTScore = ImgProc::FindShiTomasiScoreAtPoint(lev.im,*i);
+            double dSTScore = ImgProc::FindShiTomasiScoreAtPoint(lev.im,*i,3);
+            std::cout << "point,score: " << *i << ", " << dSTScore << std::endl;
             if(dSTScore > 70)
             {
                 Candidate c;

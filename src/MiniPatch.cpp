@@ -1,4 +1,4 @@
-#include "MiniPatch.h"
+#include "ImgProc.h"
 
 int MiniPatch::mnHalfPatchSize = 4;
 int MiniPatch::mnRange = 10;
