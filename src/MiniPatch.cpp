@@ -55,7 +55,7 @@ bool MiniPatch::FindPatch(cv::Point2f &ptPos,
     cv::Point2f ptBBoxTL = ptPos - cv::Point2f(nRange, nRange);
     cv::Point2f ptBBoxBR = ptPos + cv::Point2f(nRange, nRange);
     std::vector<cv::Point2f>::iterator i;
-    if(NULL != pvRowLUT)
+    if(NULL == pvRowLUT)
     {
         for(i = vCorners.begin(); i!=vCorners.end(); i++)
         {
@@ -70,7 +70,6 @@ bool MiniPatch::FindPatch(cv::Point2f &ptPos,
             nTopRow = 0;
         if(nTopRow >= (int)pvRowLUT->size())
             nTopRow = (int)pvRowLUT->size()-1;
-
         i = vCorners.begin()+(*pvRowLUT)[nTopRow];
     }
 

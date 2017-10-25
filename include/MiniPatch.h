@@ -1,6 +1,8 @@
 // This is a simple pixel-patch class, used for tracking small patches
 // it's used by the tracker for building the initial map
 #pragma once
+#ifndef __MimiPatch_H
+#define __MimiPatch_H
 
 #include <vector>
 
@@ -19,3 +21,4 @@ struct MiniPatch
     static int mnRange;             // How far to search?
     static int mnMaxSSD;            // Max SSD for matches?    
 };
+#endif

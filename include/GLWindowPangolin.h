@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __GLWindowPangolin_H
+#define __GLWindowPangolin_H
 
 #include <string>
 #include <vector>
@@ -52,3 +54,4 @@ private:
     RGB mRGB;
     pangolin::GlTexture mTexture;
 };
+#endif

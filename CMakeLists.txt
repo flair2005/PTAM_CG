@@ -1,28 +1,27 @@
 project(PTAM-GS)
 cmake_minimum_required(VERSION 2.8)
-aux_source_directory(. SRC_LIST)
 
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall -g")
 
 # OpenCV
-find_package( OpenCV 3.1 REQUIRED )
+find_package( OpenCV REQUIRED )
 if(OpenCV_FOUND)
     include_directories( ${OpenCV_INCLUDE_DIRS} )
     link_libraries( ${OpenCV_LIBS} )
 endif()
 
-# Eigen
-find_package(Eigen3 REQUIRED)
-if(EIGEN3_FOUND)
-    include_directories( ${EIGEN3_INCLUDE_DIR} )
-endif()
+## Eigen
+#find_package(Eigen3 REQUIRED)
+#if(EIGEN3_FOUND)
+#    include_directories( ${EIGEN3_INCLUDE_DIR} )
+#endif()
 
-# Sophus
-find_package( Sophus REQUIRED )
-if(Sophus_FOUND)
-    include_directories( ${Sophus_INCLUDE_DIRS} )
-    link_libraries( ${Sophus_LIBRARIES} )
-endif()
+## Sophus
+#find_package( Sophus REQUIRED )
+#if(Sophus_FOUND)
+#    include_directories( ${Sophus_INCLUDE_DIRS} )
+#    link_libraries( ${Sophus_LIBRARIES} )
+#endif()
 
 # OpenGL
 find_package(OpenGL REQUIRED)

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __System_H
+#define __System_H
 
 #include <opencv2/opencv.hpp>
 
@@ -18,3 +20,4 @@ private:
 
     bool mbDone;
 };
+#endif

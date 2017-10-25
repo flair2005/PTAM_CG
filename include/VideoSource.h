@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __VideoSource_H
+#define __VideoSource_H
 
 #include <vector>
 #include <string>
@@ -33,3 +35,4 @@ private:
     std::string mStrDatasetDir;
     std::string mStrAssociationFilePath;
 };
+#endif

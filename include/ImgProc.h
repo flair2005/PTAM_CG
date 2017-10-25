@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __ImgProc_H
+#define __ImgProc_H
 
 #include "opencv2/opencv.hpp"
 
@@ -12,3 +14,4 @@ public:
     static double FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, unsigned int nHalfBoxSize=3);
     static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, int border=10);
 };
+#endif
