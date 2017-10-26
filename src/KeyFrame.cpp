@@ -10,27 +10,26 @@ void KeyFrame::MakeKeyFrame_Lite(cv::Mat &img)
         Level &lev = aLevels[i];
         if(0 != i)
         {
-            cv::Size sizeImg(aLevels[i-1].im.cols/2, aLevels[i-1].im.rows/2);
-            cv::pyrDown(aLevels[i-1].im,lev.im,sizeImg);//Gaussian pyramid, default kernel 5*5
+            ImgProc::HalfSample(aLevels[i-1].im,lev.im);
         }
         lev.vCorners.clear();
         lev.vCandidates.clear();
         lev.vMaxCorners.clear();
         if(i == 0)
         {
-            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
+            Feature2dDetector::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
         }
         if(i == 1)
         {
-            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
+            Feature2dDetector::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
         }
         if(i == 2)
         {
-            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
+            Feature2dDetector::DetectFASTCorners(lev.im, lev.vCorners, 15, false);
         }
         if(i == 3)
         {
-            ImgProc::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
+            Feature2dDetector::DetectFASTCorners(lev.im, lev.vCorners, 10, false);
         }
         //generate row LUT
         unsigned int v=0;
@@ -49,12 +48,12 @@ void KeyFrame::MakeKeyFrame_Rest()
     for(unsigned int l=0; l<LEVELS; ++l)
     {
         Level &lev = aLevels[l];
-        ImgProc::DetectFASTCorners(lev.im, lev.vMaxCorners, 10, true);
+        Feature2dDetector::DetectFASTCorners(lev.im, lev.vMaxCorners, 10, true);
         for(std::vector<cv::Point2f>::iterator i=lev.vMaxCorners.begin(); i!=lev.vMaxCorners.end(); i++)
         {
             if(!ImgProc::IsInImageWithBorder(lev.im,*i, 10))
                 continue;
-            double dSTScore = ImgProc::FindShiTomasiScoreAtPoint(lev.im,*i,3);
+            double dSTScore = Feature2dDetector::FindShiTomasiScoreAtPoint(lev.im,*i,3);
             std::cout << "point,score: " << *i << ", " << dSTScore << std::endl;
             if(dSTScore > 70)
             {

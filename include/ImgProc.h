@@ -7,12 +7,15 @@
 class ImgProc
 {
 public:
-    ImgProc() {}
-    ~ImgProc(){}
+    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, int border=10);
+    static int HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst);
+};
 
+class Feature2dDetector : public ImgProc
+{
+public:
     static int DetectFASTCorners(const cv::Mat &srcImage, std::vector<cv::Point2f> &vecKeyPoints, const int &threshold, bool nonmaxSuppression);
     static double FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, unsigned int nHalfBoxSize=3);
-    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, int border=10);
 };
 
 // This is a simple pixel-patch class, used for tracking small patches
