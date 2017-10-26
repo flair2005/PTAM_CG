@@ -1,4 +1,7 @@
+<!DOCTYPE html>  
+<html>
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>  
+
 # PTAM-GS
 PTAM source code using OpenCV,Eigen,Sophus,OpenGL,Pangolin libraries.
 
@@ -113,3 +116,4 @@ J_{projection} =
 \left[\begin{array}{cc}\frac{du}{dx_c}&\frac{du}{dy_c}\\\frac{dv}{dx_c}&\frac{dv}{dy_c}\end{array}\right]  
 \end{aligned}
 $$
+</html> 
