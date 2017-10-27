@@ -15,7 +15,7 @@ class Feature2dDetector : public ImgProc
 {
 public:
     static int DetectFASTCorners(const cv::Mat &srcImage, std::vector<cv::Point2f> &vecKeyPoints, const int &threshold, bool nonmaxSuppression);
-    static double FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, unsigned int nHalfBoxSize=3);
+    static int FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, double &dScore, unsigned int nHalfBoxSize=3);
 };
 
 // This is a simple pixel-patch class, used for tracking small patches
@@ -28,8 +28,8 @@ public:
     static int mnRange;             // How far to search?
     static int mnMaxSSD;            // Max SSD for matches?
 
-    int SampleFromImage(cv::Mat &img, const cv::Point2f &ptPos);
-    int SSDAtPoint(cv::Mat &img, const cv::Point2i &pt);
+    int SampleFromImage(const cv::Mat &img, const cv::Point2f &ptPos);
+    int SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD);
     bool FindPatch(cv::Point2f &ptPos,cv::Mat &img,int nRange,
                    std::vector<cv::Point2f> &vCorners,
                    std::vector<int> *pvRowLUT = NULL);

@@ -1,20 +1,19 @@
-#include "VideoSource.h"
+#include <gtest/gtest.h>
 
-#include "gtest/gtest.h"
+#include "Common.h"
+#include "VideoSource.h"
 
 TEST(ImageDataSet,ReadImagesAssociationFile)
 {
-    ImageDataSet *datasetImg = new ImageDataSet("/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
-                                                "/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
-    std::vector<std::string> vstrImageFilenamesRGB;
-    std::vector<std::string> vstrImageFilenamesD;
-    std::vector<double> vTimestamps;
-    datasetImg->ReadImagesAssociationFile(vstrImageFilenamesRGB,vstrImageFilenamesD,vTimestamps);
-    if(datasetImg!=NULL)
+    VideoSource *videoSource = new ImageDataSet("/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
+                                                "/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
+    cv::Mat imgRGB, imgBW;
+    int ret = videoSource->GetFrameRGBBW(imgRGB, imgBW);
+    ASSERT_TRUE(ret==GS::RET_SUCESS);
+    if(videoSource!=NULL)
     {
-        delete datasetImg;
-        datasetImg = NULL;
+        delete videoSource;
+        videoSource = NULL;
     }
-    ASSERT_TRUE(!vstrImageFilenamesRGB.empty());
-    ASSERT_EQ(vstrImageFilenamesD.size(),vstrImageFilenamesRGB.size());
+    ASSERT_TRUE(!imgRGB.empty());
 }

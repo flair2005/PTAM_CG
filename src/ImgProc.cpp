@@ -1,3 +1,4 @@
+#include "Common.h"
 #include "ImgProc.h"
 
 #include <vector>
@@ -11,7 +12,7 @@ bool ImgProc::IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, i
 int ImgProc::HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst)
 {
     if(1 != imgSrc.channels())
-        return 1;
+        return GS::RET_FAILED;
     imgDst.create(imgSrc.rows/2,imgSrc.cols/2,CV_8UC1);
     const unsigned char *top = imgSrc.data;
     const unsigned char *bottom = top + imgSrc.cols;
@@ -31,5 +32,5 @@ int ImgProc::HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst)
         top += skip;
         bottom += skip;
     }
-    return 0;
+    return GS::RET_SUCESS;
 }

@@ -4,14 +4,19 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "Common.h"
 
+
+class GLWindowPangolin;
+class VideoSource;
 class Tracker;
 
 class System
 {
 public:
+    GLWindowPangolin *mpPangolinWindow;
+    VideoSource *mpVideoSource;
     System();
+    ~System();
     void Run();
     void Update(cv::Mat imgBW, cv::Mat imgRGB);
 

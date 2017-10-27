@@ -63,8 +63,8 @@ struct KeyFrame
     bool bFixed; //(only true for first KF!)
     Level aLevels[LEVELS];
 
-    void MakeKeyFrame_Lite(cv::Mat &img);
-    void MakeKeyFrame_Rest();
+    int MakeKeyFrame_Lite(const cv::Mat &img);
+    int MakeKeyFrame_Rest();
 };
 
 #endif

@@ -1,77 +1,53 @@
-#include "System.h"
-
 #include <unistd.h>
 #include <iostream>
 
-#include "VideoSource.h"
+#include "Common.h"
+#include "System.h"
 #include "GLWindowPangolin.h"
+#include "VideoSource.h"
 #include "Tracker.h"
 
 System::System()
 {
-    mpTracker = new Tracker();
+    mpPangolinWindow = new GLWindowPangolin("PTAM-GS",GS::Size(640,480));
+    mpVideoSource = new ImageDataSet("/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
+                                       "/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
+    mpTracker = new Tracker(mpPangolinWindow);
     mbDone = false;
 }
 
 void System::Run()
 {
-    ImageDataSet *datasetImg = new ImageDataSet("/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
-                                                "/home/gordon/projects/SLAM/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
-    std::vector<std::string> vstrImageFilenamesRGB;
-    std::vector<std::string> vstrImageFilenamesD;
-    std::vector<double> vTimestamps;
-    datasetImg->ReadImagesAssociationFile(vstrImageFilenamesRGB,vstrImageFilenamesD,vTimestamps);
-    if(datasetImg!=NULL)
+    cv::Mat imgRGB,imgBW;
+    while(!mbDone)
     {
-        delete datasetImg;
-        datasetImg = NULL;
-    }
-    if(vstrImageFilenamesRGB.empty())
-    {
-        std::cerr << "No images found in provided path." << endl;
-        return;
-    }
-    else if(vstrImageFilenamesD.size()!=vstrImageFilenamesRGB.size())
-    {
-        std::cerr << "Different number of images for rgb and depth." << endl;
-        return;
-    }
+        if(GS::RET_FAILED == mpVideoSource->GetFrameRGBBW(imgRGB,imgBW))
+            break;
 
-    GLWindowPangolin glwindowPangolin("PTAM-GS",GLWindowPangolin::Size(640,480));
+        mpPangolinWindow->SetupViewport();
+        mpPangolinWindow->SetupVideoOrtho();
+        mpPangolinWindow->SetupVideoRasterPosAndZoom();
 
-    for(unsigned int ni=0; ni<vstrImageFilenamesRGB.size() && !pangolin::ShouldQuit(); ++ni)
-    {
-        cv::Mat imgBGR = cv::imread(vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
-        if(imgBGR.empty())
-        {
-            std::cerr << "Failed to load image at: " << vstrImageFilenamesRGB[ni] << endl;
-            return;
-        }
-        cv::Mat imgBW,imgRGB;
-        cv::cvtColor(imgBGR,imgRGB,CV_BGR2RGB );
-        cv::cvtColor(imgBGR,imgBW, CV_BGR2GRAY);
-
-        glwindowPangolin.SetupViewport();
-        glwindowPangolin.SetupVideoOrtho();
-        glwindowPangolin.SetupVideoRasterPosAndZoom();
-
-        glwindowPangolin.Clear();
-        glwindowPangolin.DrawTexture2DGray(imgBW);
+        mpPangolinWindow->Clear();
+        mpPangolinWindow->DrawTexture2DGray(imgBW);
 
         Update(imgBW,imgRGB);
 
-        glwindowPangolin.RenderTextureToViewport();
-        glwindowPangolin.EndFrame();
+        mpPangolinWindow->RenderTextureToViewport();
+        mpPangolinWindow->EndFrame();
 
         usleep(40000);
-        if(ni == vstrImageFilenamesRGB.size()-1)
-        {
-            ni=0;
-        }
     }
 }
 
 void System::Update(cv::Mat imgBW, cv::Mat imgRGB)
 {
     mpTracker->TrackFrame(imgBW, true);
+}
+
+System::~System()
+{
+    DELETE_NEW_OBJ(mpTracker)
+    DELETE_NEW_OBJ(mpVideoSource)
+    DELETE_NEW_OBJ(mpPangolinWindow)
 }

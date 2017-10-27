@@ -1,6 +1,6 @@
 #include "GLWindowPangolin.h"
 
-GLWindowPangolin::GLWindowPangolin(const std::string title, Size sizeWindow):
+GLWindowPangolin::GLWindowPangolin(const std::string title, GS::Size sizeWindow):
     mSizeWin(sizeWindow),
     mSizeVideo(sizeWindow)
 {
@@ -62,7 +62,7 @@ void GLWindowPangolin::RenderTextureToViewport()
     mTexture.RenderToViewport(true);
 }
 
-void GLWindowPangolin::DrawPoints2f(const std::vector<cv::Point2f> &points, RGB rgb, float size)
+void GLWindowPangolin::DrawPoints2f(const std::vector<cv::Point2f> &points, GS::RGB rgb, float size)
 {
     if(points.empty())
     {
@@ -73,6 +73,28 @@ void GLWindowPangolin::DrawPoints2f(const std::vector<cv::Point2f> &points, RGB 
     glBegin(GL_POINTS);
     for(unsigned int i=0; i<points.size(); i++)
         glVertex2f(points[i].x,points[i].y);
+    glEnd();
+}
+
+void GLWindowPangolin::DrawLines(
+        const cv::Point2f &ptStart, GS::RGB rgbStart,
+        const cv::Point2f &ptEnd  , GS::RGB rgbEnd,
+        float width)
+{
+    glLineWidth(width);
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
+    glBegin(GL_LINES);
+
+    glColor3f(rgbStart.r, rgbStart.g, rgbStart.b);
+    glVertex2f(ptStart.x, ptStart.y);
+
+    glColor3f(rgbEnd.r, rgbEnd.g, rgbEnd.b);
+    glVertex2f(ptEnd.x, ptEnd.y);
+
     glEnd();
 }
 

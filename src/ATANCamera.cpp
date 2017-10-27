@@ -22,7 +22,7 @@ cv::Point2f ATANCamera::UnProject(const cv::Point2f& v2Im)
 {
     mvLastIm = v2Im;
     mvLastDistCam.x = (mvLastIm.x - mvCenter.x) * mvInvFocal[0];
-    mvLastDistCam.y = (mvLastIm.x - mvCenter.x) * mvInvFocal[1];
+    mvLastDistCam.y = (mvLastIm.y - mvCenter.y) * mvInvFocal[1];
     mdLastDistR = std::sqrt(mvLastDistCam.ddot(mvLastDistCam));
     mdLastR = invrtrans(mdLastDistR);
     double dFactor;

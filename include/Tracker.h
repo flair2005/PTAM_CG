@@ -2,10 +2,12 @@
 #ifndef __Tracker_H
 #define __Tracker_H
 
-#include "KeyFrame.h"
 #include "ImgProc.h"
+#include "KeyFrame.h"
 
-struct Trail    // This struct is used for initial correspondences of the first stereo pair.
+class GLWindowPangolin;
+
+struct Trail
 {
     MiniPatch mPatch;
     cv::Point2i ptCurrentPos;
@@ -15,10 +17,10 @@ struct Trail    // This struct is used for initial correspondences of the first 
 class Tracker
 {
 public:
-    Tracker();
+    Tracker(GLWindowPangolin *pWindowPangolin);
     ~Tracker(){}
 
-    void TrackFrame(cv::Mat imgBW, bool bDraw);
+    void TrackFrame(const cv::Mat &imgBW, bool bDraw);
     void TrackForInitialMap();
     void TrailTracking_Start();
     int TrailTracking_Advance();
@@ -33,5 +35,8 @@ protected:
     enum{TRAIL_TRACKING_NOT_STARTED,TRAIL_TRACKING_STARTED,TRAIL_TRACKING_COMPLETE} mnInitialStage;
 
     void Reset();
+
+private:
+    GLWindowPangolin *mpPangolinWindow;
 };
 #endif

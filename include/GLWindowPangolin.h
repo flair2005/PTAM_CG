@@ -9,30 +9,13 @@
 #include <pangolin/pangolin.h>
 #include <opencv2/opencv.hpp>
 
+#include "Common.h"
+
 class GLWindowPangolin
 {
 public:
-    struct RGB
-    {
-        float r;
-        float g;
-        float b;
-        RGB(){}
-        RGB(float red, float green, float blue):r(red),g(green),b(blue){}
-    };
-
-    struct Size
-    {
-        unsigned int width;
-        unsigned int height;
-        Size(){}
-        Size(unsigned int w,unsigned int h):width(w),height(h){}
-        Size(const Size &size):width(size.width),height(size.height){}
-    };
-
-public:
     GLWindowPangolin(){}
-    GLWindowPangolin(const std::string title, Size sizeWindow);
+    GLWindowPangolin(const std::string title, GS::Size sizeWindow);
 
     void SetupViewport();
     void SetupVideoOrtho();
@@ -43,16 +26,19 @@ public:
     void DrawTexture2DRGB(const cv::Mat &imgRGB);
     void RenderTextureToViewport();
 
-    void DrawPoints2f(const std::vector<cv::Point2f> &points, RGB rgb, float size);
+    void DrawPoints2f(const std::vector<cv::Point2f> &points, GS::RGB rgb, float size);
+    void DrawLines(const cv::Point2f &ptStart, GS::RGB rgbStart,
+                   const cv::Point2f &ptEnd  , GS::RGB rgbEnd,
+                   float width);
     void DrawOrigeAxis();
 
     inline void Clear(){ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
     inline void EndFrame(){ pangolin::FinishFrame(); }
 
 private:
-    Size mSizeWin;
-    Size mSizeVideo;
-    RGB mRGB;
+    GS::Size mSizeWin;
+    GS::Size mSizeVideo;
+    GS::RGB mRGB;
     pangolin::GlTexture mTexture;
 };
 #endif

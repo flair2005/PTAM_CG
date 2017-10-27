@@ -1,13 +1,14 @@
+#include "Common.h"
 #include "ImgProc.h"
 
 int MiniPatch::mnHalfPatchSize = 4;
 int MiniPatch::mnRange = 10;
 int MiniPatch::mnMaxSSD = 9999;
 
-int MiniPatch::SampleFromImage(cv::Mat &img, const cv::Point2f &ptPos)
+int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2f &ptPos)
 {
     if(!ImgProc::IsInImageWithBorder(img,ptPos,mnHalfPatchSize))
-        return 1;
+        return GS::RET_FAILED;
 
     cv::Rect rectROI;
     rectROI.width = 2*mnHalfPatchSize+1;
@@ -16,13 +17,13 @@ int MiniPatch::SampleFromImage(cv::Mat &img, const cv::Point2f &ptPos)
     rectROI.y = ptPos.y-rectROI.height/2.f;
     mimOrigPatch = img(rectROI);
 
-    return 0;
+    return GS::RET_SUCESS;
 }
 
-int MiniPatch::SSDAtPoint(cv::Mat &img, const cv::Point2i &pt)
+int MiniPatch::SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD)
 {
     if(!ImgProc::IsInImageWithBorder(img,pt,mnHalfPatchSize))
-        return mnMaxSSD + 1;
+        return GS::RET_FAILED;
 
     cv::Point2i ptImgBase(pt.x-mnHalfPatchSize, pt.y-mnHalfPatchSize);
 
@@ -31,16 +32,16 @@ int MiniPatch::SSDAtPoint(cv::Mat &img, const cv::Point2i &pt)
     unsigned int nCols = mimOrigPatch.cols;
     for(unsigned int h=0; h<nRows; ++h)
     {
-        unsigned char *pImage    = img.ptr<uchar>(ptImgBase.y+h);
-        unsigned char *pTemplate = mimOrigPatch.ptr<uchar>(h);
+        const unsigned char *pImage    = img.ptr<uchar>(ptImgBase.y+h);
+        const unsigned char *pTemplate = mimOrigPatch.ptr<uchar>(h);
         for(unsigned int w=0; w<nCols; ++w)
         {
             int nDiff = pImage[ptImgBase.x+w]-pTemplate[w];
             nSumSqDiff += nDiff * nDiff;
         }
     }
-
-    return nSumSqDiff;
+    nSSD = nSumSqDiff;
+    return GS::RET_SUCESS;
 }
 
 // Find a patch by searching at FAST corners in an input image
@@ -82,7 +83,9 @@ bool MiniPatch::FindPatch(cv::Point2f &ptPos,
         if(i->y > ptBBoxBR.y)
             break;
 
-        int nSSD = SSDAtPoint(img, *i);
+        int nSSD = 0;
+        if(GS::RET_FAILED == SSDAtPoint(img, *i, nSSD))
+            nSSD = mnMaxSSD + 1;
         if(nSSD < nBestSSD)
         {
             ptBest = *i;

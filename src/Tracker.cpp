@@ -1,34 +1,31 @@
-#include "Tracker.h"
-#include "GLWindowPangolin.h"
 #include <utility>
 
-Tracker::Tracker()
+#include "Tracker.h"
+#include "GLWindowPangolin.h"
+
+Tracker::Tracker(GLWindowPangolin *pWindowPangolin):mpPangolinWindow(pWindowPangolin)
 {
     mCurrentKF.bFixed = false;
-
     Reset();
 }
 
-void Tracker::TrackFrame(cv::Mat imgBW, bool bDraw)
+void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 {
     mbDraw = bDraw;
     mCurrentKF.MakeKeyFrame_Lite(imgBW);
 
     mnFrame++;
 
-    if(true)
+    if(mbDraw)
     {
-        GLWindowPangolin pangolinWin;
-        pangolinWin.DrawPoints2f(mCurrentKF.aLevels[0].vCorners, GLWindowPangolin::RGB(1,0,1), 1.0f);
+        mpPangolinWindow->DrawPoints2f(mCurrentKF.aLevels[0].vCorners, GS::RGB(1,0,1), 1.0f);
     }
 
-    std::cout << "mnFrame: " << mnFrame << std::endl;
     TrackForInitialMap();
 }
 
 void Tracker::TrackForInitialMap()
 {
-//    // MiniPatch tracking threshhold.
 //    static gvar3<int> gvnMaxSSD("Tracker.MiniPatchMaxSSD", 100000, SILENT);
 //    MiniPatch::mnMaxSSD = *gvnMaxSSD;
     MiniPatch::mnMaxSSD = 100000;
@@ -45,21 +42,20 @@ void Tracker::TrackForInitialMap()
 
     if(mnInitialStage == TRAIL_TRACKING_STARTED)
     {
-        int nGoodTrails = TrailTracking_Advance();  // This call actually tracks the trails
-        if(nGoodTrails < 10) // if most trails have been wiped out, no point continuing.
+        int nGoodTrails = TrailTracking_Advance();
+        if(nGoodTrails < 10)
         {
             Reset();
             return;
         }
-
-//        if(mnFrame==12)
-//        {
-//            vector<pair<ImageRef, ImageRef> > vMatches;   // This is the format the mapmaker wants for the stereo pairs
-//            for(list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
-//                vMatches.push_back(pair<ImageRef, ImageRef>(i->irInitialPos,i->irCurrentPos));
-//            mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
-//            mnInitialStage = TRAIL_TRACKING_COMPLETE;
-//        }
+        if(mnFrame==12)
+        {
+            std::vector<std::pair<cv::Point2i, cv::Point2i> > vMatches;
+            for(std::list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
+                vMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(i->ptInitialPos,i->ptCurrentPos));
+            //mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
+            //mnInitialStage = TRAIL_TRACKING_COMPLETE;
+        }
     }
 
 }
@@ -106,17 +102,6 @@ void Tracker::TrailTracking_Start()
 int Tracker::TrailTracking_Advance()
 {
     int nGoodTrails = 0;
-    if(mbDraw)
-    {
-        glPointSize(5);
-        glLineWidth(2);
-        glEnable(GL_POINT_SMOOTH);
-        glEnable(GL_LINE_SMOOTH);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_BLEND);
-        glBegin(GL_LINES);
-    }
-
     MiniPatch BackwardsPatch;
     Level &lCurrentFrame = mCurrentKF.aLevels[0];
     Level &lPreviousFrame = mPreviousFrameKF.aLevels[0];
@@ -143,23 +128,24 @@ int Tracker::TrailTracking_Advance()
         }
         if(mbDraw)
         {
-            if(!bFound)
-                glColor3f(0,1,1); // Failed trails flash purple before dying.
-            else
-                glColor3f(1,1,0);
-            glVertex2f(trail.ptInitialPos.x, trail.ptInitialPos.y);
+            GS::RGB rgbStart, rgbEnd;
             if(bFound)
-                glColor3f(1,0,0);
-            glVertex2f(trail.ptCurrentPos.x, trail.ptCurrentPos.y);
+            {
+                rgbStart = GS::RGB(1,1,0);
+                rgbEnd   = GS::RGB(1,0,0);
+            }
+            else
+            {
+                rgbStart = rgbEnd = GS::RGB(0,1,1);
+            }
+            mpPangolinWindow->DrawLines(trail.ptInitialPos, rgbStart, trail.ptCurrentPos, rgbEnd, 2.0f);
         }
-        if(!bFound) // Erase from list of trails if not found this frame.
+        if(!bFound)
         {
             mlTrails.erase(i);
         }
         i = next;
     }
-    if(mbDraw)
-        glEnd();
 
     mPreviousFrameKF = mCurrentKF;
     return nGoodTrails;

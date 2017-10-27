@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-using namespace std;
+#include <opencv2/opencv.hpp>
 
 class VideoSource
 {
@@ -13,26 +13,24 @@ public:
     unsigned int mWidth;
     unsigned int mHeight;
     VideoSource(){}
-    //virtual ~VideoSource(){}
-    //virtual int GetFrameRGB(cv::Mat &imRGB,cv::Mat &imBW){return 0;}
+    virtual ~VideoSource(){}
+    virtual int GetFrameRGBBW(cv::Mat &imgRGB,cv::Mat &imgBW){return 0;}
 
 };
 
 class ImageDataSet : public VideoSource
 {
 public:
-    ImageDataSet(const std::string &strDatasetDir,const std::string &strAssociationFilePath):
-        mStrDatasetDir(strDatasetDir),
-        mStrAssociationFilePath(strAssociationFilePath)
-    {
-    }
+    ImageDataSet(const std::string &strDatasetDir,const std::string &strAssociationFilePath);
     ~ImageDataSet(){}
-    void ReadImagesAssociationFile(std::vector<std::string> &vstrImageFilenamesRGB,
-                                   std::vector<std::string> &vstrImageFilenamesD,
-                                   std::vector<double> &vTimestamps);
+    int ReadImagesAssociationFile();
+    int GetFrameRGBBW(cv::Mat &imgRGB, cv::Mat &imgBW);
 
 private:
     std::string mStrDatasetDir;
     std::string mStrAssociationFilePath;
+    std::vector<std::string> mvstrImageFilenamesRGB;
+    std::vector<std::string> mvstrImageFilenamesD;
+    std::vector<double> mvTimestamps;
 };
 #endif
