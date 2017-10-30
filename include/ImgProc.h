@@ -28,7 +28,7 @@ public:
     static int mnRange;             // How far to search?
     static int mnMaxSSD;            // Max SSD for matches?
 
-    int SampleFromImage(const cv::Mat &img, const cv::Point2f &ptPos);
+    int SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos);
     int SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD);
     bool FindPatch(cv::Point2f &ptPos,cv::Mat &img,int nRange,
                    std::vector<cv::Point2f> &vCorners,

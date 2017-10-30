@@ -5,7 +5,7 @@ int MiniPatch::mnHalfPatchSize = 4;
 int MiniPatch::mnRange = 10;
 int MiniPatch::mnMaxSSD = 9999;
 
-int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2f &ptPos)
+int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos)
 {
     if(!ImgProc::IsInImageWithBorder(img,ptPos,mnHalfPatchSize))
         return GS::RET_FAILED;
@@ -13,8 +13,8 @@ int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2f &ptPos)
     cv::Rect rectROI;
     rectROI.width = 2*mnHalfPatchSize+1;
     rectROI.height = 2*mnHalfPatchSize+1;
-    rectROI.x = ptPos.x-rectROI.width/2.f;
-    rectROI.y = ptPos.y-rectROI.height/2.f;
+    rectROI.x = ptPos.x-rectROI.width/2;
+    rectROI.y = ptPos.y-rectROI.height/2;
     mimOrigPatch = img(rectROI);
 
     return GS::RET_SUCESS;

@@ -78,7 +78,6 @@ void Tracker::TrailTracking_Start()
             continue;
         vCornersAndSTScores.push_back(std::pair<double,cv::Point2f>(c.dSTScore, c.ptLevelPos));
     }
-
     // Sort according to Shi-Tomasi score, highest score first in sorted list
     std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_judge);
 
@@ -98,7 +97,6 @@ void Tracker::TrailTracking_Start()
     mPreviousFrameKF = mFirstKF;
 }
 
-// Steady-state trail tracking: Advance from the previous frame, remove duds.
 int Tracker::TrailTracking_Advance()
 {
     int nGoodTrails = 0;
@@ -121,7 +119,7 @@ int Tracker::TrailTracking_Advance()
             cv::Point2f ptBackWardsFound = ptEnd;
             bFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners);
             cv::Point2f diffPts = ptBackWardsFound - ptStart;
-            if(diffPts.dot(diffPts) > 5)
+            if(diffPts.dot(diffPts) > 2)
                 bFound = false;
             trail.ptCurrentPos = ptEnd;
             nGoodTrails++;

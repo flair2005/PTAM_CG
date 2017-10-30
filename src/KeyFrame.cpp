@@ -60,7 +60,6 @@ int KeyFrame::MakeKeyFrame_Rest()
                 continue;
             double dSTScore = 0.0;
             Feature2dDetector::FindShiTomasiScoreAtPoint(lev.im,*i,dSTScore,3);
-            std::cout << "point,score: " << *i << ", " << dSTScore << std::endl;
             if(dSTScore > 70)
             {
                 Candidate c;
