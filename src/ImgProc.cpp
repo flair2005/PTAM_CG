@@ -3,7 +3,7 @@
 
 #include <vector>
 
-bool ImgProc::IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, int border)
+bool ImgProc::IsInImageWithBorder(const cv::Mat &image, const cv::Point2i &pt, int border)
 {
     return pt.x >=border && pt.y >=border && pt.x < image.cols - border && pt.y < image.rows - border;
 }

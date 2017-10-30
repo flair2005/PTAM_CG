@@ -10,7 +10,7 @@ const unsigned int LEVELS = 4;
 
 struct Candidate
 {
-    cv::Point2f ptLevelPos;
+    cv::Point2i ptLevelPos;
     cv::Point2f ptRootPos;
     double dSTScore;
 };
@@ -19,7 +19,7 @@ struct Measurement
 {
     int nLevel;   // Which image level?
     bool bSubPix; // Has this measurement been refined to sub-pixel level?
-    cv::Point2f pt2fRootPos;  // Position of the measurement, REFERED TO PYRAMID LEVEL ZERO
+    cv::Point2i pt2fRootPos;  // Position of the measurement, REFERED TO PYRAMID LEVEL ZERO
     enum {SRC_TRACKER, SRC_REFIND, SRC_ROOT, SRC_TRAIL, SRC_EPIPOLAR} Source; // Where has this measurement come frome?
 };
 
@@ -31,9 +31,9 @@ struct Level
     }
 
     cv::Mat im;                // The pyramid level pixels
-    std::vector<cv::Point2f> vCorners;     // All FAST corners on this level
+    std::vector<cv::Point2i> vCorners;     // All FAST corners on this level
     std::vector<unsigned int> vCornerRowLUT;          // Row-index into the FAST corners, speeds up access
-    std::vector<cv::Point2f> vMaxCorners;  // The maximal FAST corners
+    std::vector<cv::Point2i> vMaxCorners;  // The maximal FAST corners
     // The keyframe struct is quite happy with default operator=, but Level needs its own
     // to override CVD's reference-counting behaviour.
 //    Level& operator=(const Level &rhs);

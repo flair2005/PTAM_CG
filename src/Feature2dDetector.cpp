@@ -3,7 +3,7 @@
 
 int Feature2dDetector::DetectFASTCorners(
         const cv::Mat &srcImage,
-        std::vector<cv::Point2f> &vecKeyPoints,
+        std::vector<cv::Point2i> &vecKeyPoints,
         const int &threshold,
         bool nonmaxSuppression)
 {

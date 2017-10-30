@@ -26,9 +26,9 @@ public:
     void DrawTexture2DRGB(const cv::Mat &imgRGB);
     void RenderTextureToViewport();
 
-    void DrawPoints2f(const std::vector<cv::Point2f> &points, GS::RGB rgb, float size);
-    void DrawLines(const cv::Point2f &ptStart, GS::RGB rgbStart,
-                   const cv::Point2f &ptEnd  , GS::RGB rgbEnd,
+    void DrawPoints2D(const std::vector<cv::Point2i> &points, GS::RGB rgb, float size);
+    void DrawLines(const cv::Point2i &ptStart, GS::RGB rgbStart,
+                   const cv::Point2i &ptEnd  , GS::RGB rgbEnd,
                    float width);
     void DrawOrigeAxis();
 

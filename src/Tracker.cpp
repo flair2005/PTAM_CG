@@ -18,7 +18,7 @@ void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 
     if(mbDraw)
     {
-        mpPangolinWindow->DrawPoints2f(mCurrentKF.aLevels[0].vCorners, GS::RGB(1,0,1), 1.0f);
+        mpPangolinWindow->DrawPoints2D(mCurrentKF.aLevels[0].vCorners, GS::RGB(1,0,1), 1.0f);
     }
 
     TrackForInitialMap();
@@ -54,13 +54,13 @@ void Tracker::TrackForInitialMap()
             for(std::list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
                 vMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(i->ptInitialPos,i->ptCurrentPos));
             //mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
-            //mnInitialStage = TRAIL_TRACKING_COMPLETE;
+            mnInitialStage = TRAIL_TRACKING_COMPLETE;
         }
     }
 
 }
 
-bool sort_judge(const std::pair<double,cv::Point2f> a,const std::pair<double,cv::Point2f> b)
+bool sort_judge(const std::pair<double,cv::Point2i> a,const std::pair<double,cv::Point2i> b)
 {
     return a.first > b.first;
 }
@@ -70,13 +70,13 @@ void Tracker::TrailTracking_Start()
     mCurrentKF.MakeKeyFrame_Rest();
     mFirstKF = mCurrentKF;
 
-    std::vector<std::pair<double,cv::Point2f> > vCornersAndSTScores;
+    std::vector<std::pair<double,cv::Point2i> > vCornersAndSTScores;
     for(unsigned int i=0; i<mCurrentKF.aLevels[0].vCandidates.size(); i++)
     {                                                                     // so that we can choose the image corners with max ST score
         Candidate &c = mCurrentKF.aLevels[0].vCandidates[i];
         if(!ImgProc::IsInImageWithBorder(mCurrentKF.aLevels[0].im,c.ptLevelPos,MiniPatch::mnHalfPatchSize))
             continue;
-        vCornersAndSTScores.push_back(std::pair<double,cv::Point2f>(c.dSTScore, c.ptLevelPos));
+        vCornersAndSTScores.push_back(std::pair<double,cv::Point2i>(c.dSTScore, c.ptLevelPos));
     }
     // Sort according to Shi-Tomasi score, highest score first in sorted list
     std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_judge);
@@ -109,16 +109,16 @@ int Tracker::TrailTracking_Advance()
         std::list<Trail>::iterator next = i;
         next++;
         Trail &trail = *i;
-        cv::Point2f ptStart = trail.ptCurrentPos;
-        cv::Point2f ptEnd = ptStart;
+        cv::Point2i ptStart = trail.ptCurrentPos;
+        cv::Point2i ptEnd = ptStart;
         bool bFound = trail.mPatch.FindPatch(ptEnd, lCurrentFrame.im, 10, lCurrentFrame.vCorners);
         if(bFound)
         {
             // Also find backwards in a married-matches check
             BackwardsPatch.SampleFromImage(lCurrentFrame.im, ptEnd);
-            cv::Point2f ptBackWardsFound = ptEnd;
+            cv::Point2i ptBackWardsFound = ptEnd;
             bFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners);
-            cv::Point2f diffPts = ptBackWardsFound - ptStart;
+            cv::Point2i diffPts = ptBackWardsFound - ptStart;
             if(diffPts.dot(diffPts) > 2)
                 bFound = false;
             trail.ptCurrentPos = ptEnd;

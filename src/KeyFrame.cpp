@@ -54,7 +54,7 @@ int KeyFrame::MakeKeyFrame_Rest()
     {
         Level &lev = aLevels[l];
         Feature2dDetector::DetectFASTCorners(lev.im, lev.vMaxCorners, 10, true);
-        for(std::vector<cv::Point2f>::iterator i=lev.vMaxCorners.begin(); i!=lev.vMaxCorners.end(); i++)
+        for(std::vector<cv::Point2i>::iterator i=lev.vMaxCorners.begin(); i!=lev.vMaxCorners.end(); i++)
         {
             if(!ImgProc::IsInImageWithBorder(lev.im,*i, 10))
                 continue;

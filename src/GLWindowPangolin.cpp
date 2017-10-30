@@ -62,7 +62,7 @@ void GLWindowPangolin::RenderTextureToViewport()
     mTexture.RenderToViewport(true);
 }
 
-void GLWindowPangolin::DrawPoints2f(const std::vector<cv::Point2f> &points, GS::RGB rgb, float size)
+void GLWindowPangolin::DrawPoints2D(const std::vector<cv::Point2i> &points, GS::RGB rgb, float size)
 {
     if(points.empty())
     {
@@ -77,8 +77,8 @@ void GLWindowPangolin::DrawPoints2f(const std::vector<cv::Point2f> &points, GS::
 }
 
 void GLWindowPangolin::DrawLines(
-        const cv::Point2f &ptStart, GS::RGB rgbStart,
-        const cv::Point2f &ptEnd  , GS::RGB rgbEnd,
+        const cv::Point2i &ptStart, GS::RGB rgbStart,
+        const cv::Point2i &ptEnd  , GS::RGB rgbEnd,
         float width)
 {
     glLineWidth(width);

@@ -26,7 +26,7 @@ TEST(ImgProc,HalfSample)
 
 TEST(Feature2dDetector,DetectFASTCorners)
 {
-    std::vector<cv::Point2f> vecKeyPoints;
+    std::vector<cv::Point2i> vecKeyPoints;
     int ret = Feature2dDetector::DetectFASTCorners(srcImage, vecKeyPoints, 10, true);
     ASSERT_EQ(ret, GS::RET_SUCESS);
 }
@@ -53,7 +53,7 @@ TEST(MiniPatch,SSDAtPoint)
     MiniPatch miniPatch;
     ASSERT_EQ(GS::RET_SUCESS,miniPatch.SampleFromImage(imgBW1,cv::Point2i(147,346)));
     int nSSD = 0;
-    miniPatch.SSDAtPoint(imgBW2,cv::Point2f(137,336),nSSD);
+    miniPatch.SSDAtPoint(imgBW2,cv::Point2i(137,336),nSSD);
     std::cout << "nSSD: " << nSSD << std::endl;
     //ASSERT_EQ(nSSD,518389);
 

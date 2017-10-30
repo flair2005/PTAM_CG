@@ -7,14 +7,14 @@
 class ImgProc
 {
 public:
-    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2f &pt, int border=10);
+    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2i &pt, int border=10);
     static int HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst);
 };
 
 class Feature2dDetector : public ImgProc
 {
 public:
-    static int DetectFASTCorners(const cv::Mat &srcImage, std::vector<cv::Point2f> &vecKeyPoints, const int &threshold, bool nonmaxSuppression);
+    static int DetectFASTCorners(const cv::Mat &srcImage, std::vector<cv::Point2i> &vecKeyPoints, const int &threshold, bool nonmaxSuppression);
     static int FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point2i ptCenter, double &dScore, unsigned int nHalfBoxSize=3);
 };
 
@@ -30,8 +30,8 @@ public:
 
     int SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos);
     int SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD);
-    bool FindPatch(cv::Point2f &ptPos,cv::Mat &img,int nRange,
-                   std::vector<cv::Point2f> &vCorners,
+    bool FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange,
+                   std::vector<cv::Point2i> &vCorners,
                    std::vector<int> *pvRowLUT = NULL);
 };
 
