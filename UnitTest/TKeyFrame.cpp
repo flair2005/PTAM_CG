@@ -1,7 +1,10 @@
-#include <gtest/gtest.h>
-#include <iostream>
-
 #include "KeyFrame.h"
+
+#include <iostream>
+#include <gtest/gtest.h>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 TEST(KeyFrame,MakeKeyFrame_Lite)
 {

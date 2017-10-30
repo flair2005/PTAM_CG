@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 
 class VideoSource
 {

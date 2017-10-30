@@ -5,6 +5,8 @@
 #include "ImgProc.h"
 #include "KeyFrame.h"
 
+#include <list>
+
 class GLWindowPangolin;
 
 struct Trail

@@ -1,7 +1,7 @@
-#include <utility>
-
 #include "Tracker.h"
 #include "GLWindowPangolin.h"
+
+#include <utility>
 
 Tracker::Tracker(GLWindowPangolin *pWindowPangolin):mpPangolinWindow(pWindowPangolin)
 {

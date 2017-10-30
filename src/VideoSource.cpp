@@ -1,6 +1,10 @@
 #include "Common.h"
 #include "VideoSource.h"
+
 #include <fstream>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/imgcodecs/imgcodecs_c.h>
+#include <opencv2/imgproc/imgproc.hpp>
 
 ImageDataSet::ImageDataSet(const std::string &strDatasetDir,const std::string &strAssociationFilePath):
     mStrDatasetDir(strDatasetDir),

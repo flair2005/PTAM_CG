@@ -1,11 +1,13 @@
-#include <gtest/gtest.h>
-#include <iostream>
-
 #include "Common.h"
 #include "ImgProc.h"
 
+#include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <gtest/gtest.h>
+
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 cv::Mat srcImage = cv::imread("/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/rgb/1305031102.343233.png");
 

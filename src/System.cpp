@@ -1,11 +1,11 @@
-#include <unistd.h>
-#include <iostream>
-
 #include "Common.h"
 #include "System.h"
 #include "GLWindowPangolin.h"
 #include "VideoSource.h"
 #include "Tracker.h"
+
+#include <unistd.h>
+#include <iostream>
 
 System::System()
 {

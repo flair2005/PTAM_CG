@@ -4,7 +4,9 @@
 
 #include <vector>
 #include <map>
-#include <opencv2/opencv.hpp>
+
+#include <opencv2/core/types.hpp>
+#include <opencv2/core/mat.hpp>
 
 const unsigned int LEVELS = 4;
 
@@ -34,19 +36,6 @@ struct Level
     std::vector<cv::Point2i> vCorners;     // All FAST corners on this level
     std::vector<unsigned int> vCornerRowLUT;          // Row-index into the FAST corners, speeds up access
     std::vector<cv::Point2i> vMaxCorners;  // The maximal FAST corners
-    // The keyframe struct is quite happy with default operator=, but Level needs its own
-    // to override CVD's reference-counting behaviour.
-//    Level& operator=(const Level &rhs);
-//    {
-//        // Operator= should physically copy pixels, not use CVD's reference-counting image copy.
-//        im.resize(rhs.im.size());
-//        copy(rhs.im, im);
-
-//        vCorners = rhs.vCorners;
-//        vMaxCorners = rhs.vMaxCorners;
-//        vCornerRowLUT = rhs.vCornerRowLUT;
-//        return *this;
-//    }
 
     std::vector<Candidate> vCandidates;   // Potential locations of new map points
 

@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-
 #include "Common.h"
 #include "VideoSource.h"
+
+#include <gtest/gtest.h>
 
 TEST(ImageDataSet,ReadImagesAssociationFile)
 {

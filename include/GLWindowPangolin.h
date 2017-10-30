@@ -2,14 +2,15 @@
 #ifndef __GLWindowPangolin_H
 #define __GLWindowPangolin_H
 
+#include "Common.h"
+
 #include <string>
 #include <vector>
 
 #include <GL/glew.h>
 #include <pangolin/pangolin.h>
-#include <opencv2/opencv.hpp>
-
-#include "Common.h"
+#include <opencv2/core/types.hpp>
+#include <opencv2/core/mat.hpp>
 
 class GLWindowPangolin
 {

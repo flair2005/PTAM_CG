@@ -2,6 +2,8 @@
 #include "KeyFrame.h"
 #include "ImgProc.h"
 
+#include <assert.h>
+
 int KeyFrame::MakeKeyFrame_Lite(const cv::Mat &img)
 {
     if(NULL == img.data)
