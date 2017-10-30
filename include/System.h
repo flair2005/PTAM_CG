@@ -2,25 +2,27 @@
 #ifndef __System_H
 #define __System_H
 
-#include <opencv2/opencv.hpp>
-
-
+#include <opencv2/core/mat.hpp>
 
 class GLWindowPangolin;
 class VideoSource;
+class ATANCamera;
+class MapMaker;
 class Tracker;
 
 class System
 {
 public:
-    GLWindowPangolin *mpPangolinWindow;
-    VideoSource *mpVideoSource;
     System();
     ~System();
     void Run();
-    void Update(cv::Mat imgBW, cv::Mat imgRGB);
+    void Update(const cv::Mat &imgBW, const cv::Mat &imgRGB);
 
 private:
+    GLWindowPangolin *mpPangolinWindow;
+    VideoSource *mpVideoSource;
+    ATANCamera *mpCamera;
+    MapMaker *mpMapMaker;
     Tracker *mpTracker;
 
     bool mbDone;

@@ -6,8 +6,10 @@
 #include "KeyFrame.h"
 
 #include <list>
+#include <sophus/se3.h>
 
 class GLWindowPangolin;
+class MapMaker;
 
 struct Trail
 {
@@ -19,15 +21,12 @@ struct Trail
 class Tracker
 {
 public:
-    Tracker(GLWindowPangolin *pWindowPangolin);
+    Tracker(GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker);
     ~Tracker(){}
 
     void TrackFrame(const cv::Mat &imgBW, bool bDraw);
-    void TrackForInitialMap();
-    void TrailTracking_Start();
-    int TrailTracking_Advance();
 
-protected:
+private:
     bool mbDraw;
     int mnFrame;
     KeyFrame mCurrentKF;
@@ -36,9 +35,14 @@ protected:
     std::list<Trail> mlTrails;
     enum{TRAIL_TRACKING_NOT_STARTED,TRAIL_TRACKING_STARTED,TRAIL_TRACKING_COMPLETE} mnInitialStage;
 
-    void Reset();
-
-private:
     GLWindowPangolin *mpPangolinWindow;
+    MapMaker &mMapMaker;
+    Sophus::SE3 mse3CamFromWorld;
+
+    void TrackForInitialMap();
+    void TrailTracking_Start();
+    int TrailTracking_Advance();
+
+    void Reset();    
 };
 #endif

@@ -2,9 +2,6 @@
 #ifndef __KeyFrame_H
 #define __KeyFrame_H
 
-#include <vector>
-#include <map>
-
 #include <opencv2/core/types.hpp>
 #include <opencv2/core/mat.hpp>
 

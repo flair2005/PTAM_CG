@@ -3,17 +3,42 @@
 #define __ATANCamera_H
 
 #include <cmath>
-#include "opencv2/opencv.hpp"
+#include <opencv2/core/types.hpp>
+#include <opencv2/core/matx.hpp>
+#include <Eigen/Core>
 
 class ATANCamera
 {
 public:
-    ATANCamera() {}
+    struct CamParams
+    {
+        inline CamParams()
+        {
+            fx = 0.809762;
+            fy = 1.41527;
+            cx = 0.501900;
+            cy = 0.43248;
+            w  = 0.007244;
+        }
+
+        float fx;
+        float fy;
+        float cx;
+        float cy;
+        float w ;
+    }mCamParams;
+
+public:
+    ATANCamera();
+    ~ATANCamera() {}
     cv::Point2f Project(const cv::Point2f &vCam);
     cv::Point2f UnProject(const cv::Point2f& v2Im);
-    cv::Matx22f GetProjectionDerivs();
+    Eigen::Matrix2f GetProjectionDerivs();
+    void SetImageSize(cv::Vec2f size);
+    void RefreshParams() ;
 
-protected:
+public:
+//protected:
     // Cached from the last project/unproject:
     cv::Point2f mvLastCam;      // Last z=1 coord
     cv::Point2f mvLastIm;       // Last image/UFB coord

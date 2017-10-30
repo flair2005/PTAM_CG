@@ -5,7 +5,7 @@ set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall -g")
 
 # OpenCV
-find_package( OpenCV REQUIRED )
+find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_imgcodecs opencv_imgproc opencv_features2d opencv_calib3d)
 if(OpenCV_FOUND)
     include_directories( ${OpenCV_INCLUDE_DIRS} )
     link_libraries( ${OpenCV_LIBS} )
@@ -17,12 +17,12 @@ endif()
 #    include_directories( ${EIGEN3_INCLUDE_DIR} )
 #endif()
 
-## Sophus
-#find_package( Sophus REQUIRED )
-#if(Sophus_FOUND)
-#    include_directories( ${Sophus_INCLUDE_DIRS} )
-#    link_libraries( ${Sophus_LIBRARIES} )
-#endif()
+# Sophus
+find_package( Sophus REQUIRED )
+if(Sophus_FOUND)
+    include_directories( ${Sophus_INCLUDE_DIRS} )
+    link_libraries( ${Sophus_LIBRARIES} )
+endif()
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -52,6 +52,7 @@ set( SRC_LIST_PTAM
     ${PROJECT_SOURCE_DIR}/src/GLWindowPangolin.cpp
     ${PROJECT_SOURCE_DIR}/src/KeyFrame.cpp
     ${PROJECT_SOURCE_DIR}/src/Tracker.cpp
+    ${PROJECT_SOURCE_DIR}/src/MapMaker.cpp
     ${PROJECT_SOURCE_DIR}/src/ImgProc.cpp
     ${PROJECT_SOURCE_DIR}/src/MiniPatch.cpp
     ${PROJECT_SOURCE_DIR}/src/ATANCamera.cpp

@@ -1,18 +1,24 @@
-#include "Common.h"
 #include "System.h"
-#include "GLWindowPangolin.h"
-#include "VideoSource.h"
-#include "Tracker.h"
 
 #include <unistd.h>
 #include <iostream>
+
+#include "Common.h"
+#include "GLWindowPangolin.h"
+#include "VideoSource.h"
+#include "ATANCamera.h"
+#include "MapMaker.h"
+#include "Tracker.h"
 
 System::System()
 {
     mpPangolinWindow = new GLWindowPangolin("PTAM-GS",GS::Size(640,480));
     mpVideoSource = new ImageDataSet("/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz",
                                        "/home/gordon/projects/PTAM4AR/data/rgbd_dataset_freiburg1_xyz/associate.txt");
-    mpTracker = new Tracker(mpPangolinWindow);
+    mpCamera = new ATANCamera();
+    mpMapMaker = new MapMaker(*mpCamera);
+    mpTracker = new Tracker(mpPangolinWindow,*mpMapMaker);
+
     mbDone = false;
 }
 
@@ -40,7 +46,7 @@ void System::Run()
     }
 }
 
-void System::Update(cv::Mat imgBW, cv::Mat imgRGB)
+void System::Update(const cv::Mat &imgBW, const cv::Mat &imgRGB)
 {
     mpTracker->TrackFrame(imgBW, true);
 }
@@ -48,6 +54,7 @@ void System::Update(cv::Mat imgBW, cv::Mat imgRGB)
 System::~System()
 {
     DELETE_NEW_OBJ(mpTracker)
+    DELETE_NEW_OBJ(mpMapMaker)
     DELETE_NEW_OBJ(mpVideoSource)
     DELETE_NEW_OBJ(mpPangolinWindow)
 }

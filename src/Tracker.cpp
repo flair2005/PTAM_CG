@@ -1,9 +1,13 @@
 #include "Tracker.h"
-#include "GLWindowPangolin.h"
 
 #include <utility>
 
-Tracker::Tracker(GLWindowPangolin *pWindowPangolin):mpPangolinWindow(pWindowPangolin)
+#include "GLWindowPangolin.h"
+#include "MapMaker.h"
+
+Tracker::Tracker(GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker):
+    mpPangolinWindow(pWindowPangolin),
+    mMapMaker(mapmaker)
 {
     mCurrentKF.bFixed = false;
     Reset();
@@ -39,7 +43,6 @@ void Tracker::TrackForInitialMap()
         }
         return;
     }
-
     if(mnInitialStage == TRAIL_TRACKING_STARTED)
     {
         int nGoodTrails = TrailTracking_Advance();
@@ -52,12 +55,13 @@ void Tracker::TrackForInitialMap()
         {
             std::vector<std::pair<cv::Point2i, cv::Point2i> > vMatches;
             for(std::list<Trail>::iterator i = mlTrails.begin(); i!=mlTrails.end(); i++)
+            {
                 vMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(i->ptInitialPos,i->ptCurrentPos));
-            //mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
+            }
+            mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);
             mnInitialStage = TRAIL_TRACKING_COMPLETE;
         }
     }
-
 }
 
 bool sort_judge(const std::pair<double,cv::Point2i> a,const std::pair<double,cv::Point2i> b)

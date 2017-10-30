@@ -6,5 +6,6 @@ ADD_EXECUTABLE( UnitTest.run
     TVideoSource.cpp
     TImgProc.cpp
     TKeyFrame.cpp
+    TATANCamera.cpp
     ${SRC_LIST_PTAM} )
 TARGET_LINK_LIBRARIES(UnitTest.run gtest pthread)

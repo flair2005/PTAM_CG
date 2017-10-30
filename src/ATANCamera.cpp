@@ -1,5 +1,44 @@
 #include "ATANCamera.h"
 
+ATANCamera::ATANCamera()
+{
+    mvImageSize[0] = 640.0;
+    mvImageSize[1] = 480.0;
+    RefreshParams();
+}
+
+void ATANCamera::SetImageSize(cv::Vec2f size)
+{
+    mvImageSize = size;
+}
+
+void ATANCamera::RefreshParams()
+{
+    mvFocal[0] = mvImageSize[0] * mCamParams.fx;
+    mvFocal[1] = mvImageSize[1] * mCamParams.fy;
+    mvCenter.x = mvImageSize[0] * mCamParams.cx-0.5;
+    mvCenter.y = mvImageSize[1] * mCamParams.cy-0.5;
+    mdW =  mCamParams.w;
+
+    // One over focal length
+    mvInvFocal[0] = 1.0 / mvFocal[0];
+    mvInvFocal[1] = 1.0 / mvFocal[1];
+
+    // Some radial distortion parameters
+    if(mdW != 0.0)
+    {
+        md2Tan = 2.0 * std::tan(mdW / 2.0);
+        mdOneOver2Tan = 1.0 / md2Tan;
+        mdWinv = 1.0 / mdW;
+        mdDistortionEnabled = 1.0;
+    }
+    else
+    {
+        mdWinv = 0.0;
+        md2Tan = 0.0;
+        mdDistortionEnabled = 0.0;
+    }
+}
 
 // Project from the camera z=1 plane to image pixels,
 cv::Point2f ATANCamera::Project(const cv::Point2f& vCam)
@@ -35,7 +74,7 @@ cv::Point2f ATANCamera::UnProject(const cv::Point2f& v2Im)
     return mvLastCam;
 }
 
-cv::Matx22f ATANCamera::GetProjectionDerivs()
+Eigen::Matrix2f ATANCamera::GetProjectionDerivs()
 {
     // get the derivative of image frame wrt camera z=1 frame at the last computed projection
     // in the form (d im1/d cam1, d im1/d cam2)
@@ -60,7 +99,7 @@ cv::Matx22f ATANCamera::GetProjectionDerivs()
         dFracBydy = mdWinv * (k * y) / (r*r*(1 + k*k*r*r)) - y * mdLastFactor / (r*r);
     }
 
-    cv::Matx22f m2Derivs = cv::Matx22f::ones();
+    Eigen::Matrix2f m2Derivs;
     m2Derivs(0,0) = mvFocal[0] * (dFracBydx * x + mdLastFactor);
     m2Derivs(1,0) = mvFocal[1] * (dFracBydx * y);
     m2Derivs(0,1) = mvFocal[0] * (dFracBydy * x);
