@@ -56,7 +56,8 @@ set( SRC_LIST_PTAM
     ${PROJECT_SOURCE_DIR}/src/ImgProc.cpp
     ${PROJECT_SOURCE_DIR}/src/MiniPatch.cpp
     ${PROJECT_SOURCE_DIR}/src/ATANCamera.cpp
-    ${PROJECT_SOURCE_DIR}/src/Feature2dDetector.cpp )
+    ${PROJECT_SOURCE_DIR}/src/Feature2dDetector.cpp
+    ${PROJECT_SOURCE_DIR}/src/Homography.cpp )
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_PTAM})
 
 ################ gtest ################

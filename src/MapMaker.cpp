@@ -1,8 +1,7 @@
 #include "MapMaker.h"
 
-#include <opencv2/calib3d/calib3d.hpp>
-
-#include <iostream>
+#include "Common.h"
+#include "Homography.h"
 
 MapMaker::MapMaker(const ATANCamera &cam):
     mCamera(cam)
@@ -15,30 +14,29 @@ bool MapMaker::InitFromStereo(
         std::vector<std::pair<cv::Point2i, cv::Point2i> > &vTrailMatches,
         Sophus::SE3 &se3CameraPos)
 {
-    std::vector<std::pair<cv::Point2i, cv::Point2i> >().swap(vTrailMatches);
-    vTrailMatches.clear();
+    mCamera.SetImageSize(cv::Point2f(640,480));
 
-    vTrailMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(cv::Point2i(491.913, 94.5141),cv::Point2i(446.78, 100.857)));
-    vTrailMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(cv::Point2i(205.123, 102.715),cv::Point2i(159.491, 109.362)));
-    vTrailMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(cv::Point2i(201.812, 309.027),cv::Point2i(157.146, 319.571)));
-    vTrailMatches.push_back(std::pair<cv::Point2i, cv::Point2i>(cv::Point2i(506.192, 304.866),cv::Point2i(462.334, 308.977)));
-
-    std::vector<cv::Point2f> srcPoints;
-    std::vector<cv::Point2f> dstPoints;
+    std::vector<Homography::HomographyMatch> vMatches;
     for(unsigned int i=0; i<vTrailMatches.size(); i++)
     {
-        cv::Point2f v2CamPlaneFirst = mCamera.Project(vTrailMatches[i].first);
-        cv::Point2f v2CamPlaneSecond = mCamera.Project(vTrailMatches[i].second);
-        //Eigen::Matrix2f m2PixelProjectionJac = mCamera.GetProjectionDerivs();
+        cv::Point2f pt2CamPlaneFirst = mCamera.UnProject(vTrailMatches[i].first);
+        cv::Point2f pt2CamPlaneSecond = mCamera.UnProject(vTrailMatches[i].second);
+        Eigen::Matrix2f m2PixelProjectionJac = mCamera.GetProjectionDerivs();
 
-        srcPoints.push_back(v2CamPlaneFirst);
-        dstPoints.push_back(v2CamPlaneSecond);
+        Homography::HomographyMatch match;
+        match.v2CamPlaneFirst[0]  = pt2CamPlaneFirst.x;
+        match.v2CamPlaneFirst[1]  = pt2CamPlaneFirst.y;
+        match.v2CamPlaneSecond[0] = pt2CamPlaneSecond.x;
+        match.v2CamPlaneSecond[1] = pt2CamPlaneSecond.y;
+        match.m2PixelProjectionJac = m2PixelProjectionJac;
+        vMatches.push_back(match);
     }
 
-    cv::Mat mat = cv::findHomography(srcPoints,dstPoints,CV_RANSAC,1);
+    Homography homo;
+    Eigen::Matrix3f m3Homography;
+    if(GS::RET_SUCESS == homo.HomographyFromMatches(vMatches, m3Homography))
+    {
+    }
 
-    std::cout << "findHomography: " << mat << std::endl;
-
-    exit(1);
     return false;
 }
