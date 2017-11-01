@@ -74,7 +74,7 @@ cv::Point2f ATANCamera::UnProject(const cv::Point2f& v2Im)
     return mvLastCam;
 }
 
-Eigen::Matrix2f ATANCamera::GetProjectionDerivs()
+Eigen::Matrix2d ATANCamera::GetProjectionDerivs()
 {
     // get the derivative of image frame wrt camera z=1 frame at the last computed projection
     // in the form (d im1/d cam1, d im1/d cam2)
@@ -99,7 +99,7 @@ Eigen::Matrix2f ATANCamera::GetProjectionDerivs()
         dFracBydy = mdWinv * (k * y) / (r*r*(1 + k*k*r*r)) - y * mdLastFactor / (r*r);
     }
 
-    Eigen::Matrix2f m2Derivs;
+    Eigen::Matrix2d m2Derivs;
     m2Derivs(0,0) = mvFocal[0] * (dFracBydx * x + mdLastFactor);
     m2Derivs(1,0) = mvFocal[1] * (dFracBydx * y);
     m2Derivs(0,1) = mvFocal[0] * (dFracBydy * x);

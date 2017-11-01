@@ -33,7 +33,7 @@ public:
     ~ATANCamera() {}
     cv::Point2f Project(const cv::Point2f &vCam);
     cv::Point2f UnProject(const cv::Point2f& v2Im);
-    Eigen::Matrix2f GetProjectionDerivs();
+    Eigen::Matrix2d GetProjectionDerivs();
     void SetImageSize(cv::Vec2f size);
     void RefreshParams() ;
 

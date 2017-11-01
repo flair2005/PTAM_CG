@@ -70,7 +70,6 @@ TEST(MiniPatch,SSDAtPoint)
             outfile << std::setfill('0') << std::setw(3) << (int)data << " ";
         }
         outfile<<std::endl;
-        std::cout<<std::endl;
     }
     outfile.close();
 
@@ -85,7 +84,6 @@ TEST(MiniPatch,SSDAtPoint)
 //            outfile << std::setfill('0') << std::setw(3) << (int)data << " ";
 //        }
 //        outfile<<std::endl;
-//        std::cout<<std::endl;
 //    }
 //    outfile.close();
 }

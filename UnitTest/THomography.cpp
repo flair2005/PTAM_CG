@@ -7,22 +7,6 @@
 #include "Common.h"
 #include "ATANCamera.h"
 
-TEST(Homography,EigenOperate)
-{
-    Eigen::Matrix4f m4;
-    m4 << 1, 2, 3, 4,
-            5, 6, 7, 8,
-            9, 10,11,12,
-            13,14,15,16;
-    Eigen::VectorXf v4V = m4.row(2);
-
-    Eigen::Matrix2f m2;
-    m2.row(0) = v4V.segment(0,2);
-    m2.row(1) = v4V.segment(2,2);
-
-    std::cout << m2 << std::endl;
-}
-
 TEST(Homography,HomographyFromMatches)
 {
     std::vector<std::pair<cv::Point2i, cv::Point2i> > vTrailMatches;
@@ -39,7 +23,7 @@ TEST(Homography,HomographyFromMatches)
     {
         cv::Point2f pt2CamPlaneFirst = camera.UnProject(vTrailMatches[i].first);
         cv::Point2f pt2CamPlaneSecond = camera.UnProject(vTrailMatches[i].second);
-        Eigen::Matrix2f m2PixelProjectionJac = camera.GetProjectionDerivs();
+        Eigen::Matrix2d m2PixelProjectionJac = camera.GetProjectionDerivs();
 
         Homography::HomographyMatch match;
         match.v2CamPlaneFirst[0]  = pt2CamPlaneFirst.x;
@@ -54,7 +38,7 @@ TEST(Homography,HomographyFromMatches)
     }
 
     Homography homo;
-    Eigen::Matrix3f m3Homography;
+    Eigen::Matrix3d m3Homography;
     if(GS::RET_SUCESS == homo.HomographyFromMatches(vMatches, m3Homography))
     {
         std::cout << "m3Homography: \n" << m3Homography << std::endl;

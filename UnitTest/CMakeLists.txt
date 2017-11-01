@@ -8,5 +8,6 @@ ADD_EXECUTABLE( UnitTest.run
     TKeyFrame.cpp
     TATANCamera.cpp
     THomography.cpp
+    TMathUtility.cpp
     ${SRC_LIST_PTAM} )
 TARGET_LINK_LIBRARIES(UnitTest.run gtest pthread)
