@@ -20,9 +20,7 @@ int Homography::Compute(const std::vector<HomographyMatch> &vMatches, Sophus::SE
     //get mm3BestHomography
     if(nSizeMatches < 10)
     {
-        if(GS::RET_SUCESS == HomographyFromMatches(vMatches,mm3BestHomography))
-            return GS::RET_SUCESS;
-        else
+        if(GS::RET_FAILED == HomographyFromMatches(vMatches,mm3BestHomography))
             return GS::RET_FAILED;
     }
     else
@@ -51,7 +49,6 @@ int Homography::Compute(const std::vector<HomographyMatch> &vMatches, Sophus::SE
     if(vHomographyDecompositions.size() != 8)
         return GS::RET_FAILED;
 
-    //?????????????? sort
     //get the best one from 8 vHomographyDecompositions
     if(GS::RET_FAILED == ChooseBestDecomposition(vMatches, vMatchesInliers, vHomographyDecompositions))
         return GS::RET_FAILED;
