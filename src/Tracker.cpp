@@ -64,11 +64,6 @@ void Tracker::TrackForInitialMap()
     }
 }
 
-bool sort_judge(const std::pair<double,cv::Point2i> a,const std::pair<double,cv::Point2i> b)
-{
-    return a.first > b.first;
-}
-
 void Tracker::TrailTracking_Start()
 {
     mCurrentKF.MakeKeyFrame_Rest();
@@ -82,8 +77,8 @@ void Tracker::TrailTracking_Start()
             continue;
         vCornersAndSTScores.push_back(std::pair<double,cv::Point2i>(c.dSTScore, c.ptLevelPos));
     }
-    // Sort according to Shi-Tomasi score, highest score first in sorted list
-    std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_judge);
+
+    std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_compare);
 
     int nToAdd = 1000;//GV2.GetInt("MaxInitialTrails", 1000, SILENT);
     for(unsigned int i = 0; i<vCornersAndSTScores.size() && nToAdd > 0; i++)

@@ -56,6 +56,14 @@ public:
         Eigen::Vector2d fTv3DashSlice = (m3Essential.transpose()*v2BDash.homogeneous()).segment(0,2);
         return (dError*dError / (fv3Slice.dot(fv3Slice)+fTv3DashSlice.dot(fTv3DashSlice)));
     }
+
+private:
+    inline static bool sort_compare(const HomographyDecomposition &a,const HomographyDecomposition &b)
+    {
+        return a.nScore < b.nScore;
+    }
 };
+
+
 
 #endif

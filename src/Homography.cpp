@@ -315,7 +315,7 @@ int Homography::ChooseBestDecomposition(
         decom.nScore = -nPositive;
     }
 
-    //std::sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end());
+    std::sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end(), sort_compare);
     vHomographyDecompositions.resize(4);
 
     for(unsigned char i=0; i<vHomographyDecompositions.size(); ++i)
@@ -332,7 +332,7 @@ int Homography::ChooseBestDecomposition(
         decom.nScore = -nPositive;
     }
 
-    //std::sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end(), sort_judge);
+    std::sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end(), sort_compare);
     vHomographyDecompositions.resize(2);
 
     // According to Faugeras and Lustman, ambiguity exists if the two scores are equal
