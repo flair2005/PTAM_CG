@@ -1,5 +1,6 @@
 #include "Homography.h"
 
+#include <iostream>
 #include <algorithm>
 #include <Eigen/SVD>
 
@@ -29,11 +30,14 @@ int Homography::Compute(const std::vector<HomographyMatch> &vMatches, Sophus::SE
             return GS::RET_FAILED;
     }
 
+    std::cout << "mm3BestHomography: \n" << mm3BestHomography << std::endl;
+
     //get vMatchesInliers
     std::vector<HomographyMatch> vMatchesInliers;
     for(unsigned int i=0; i<nSizeMatches; ++i)
     {
-        if(MLESACScore(mm3BestHomography, vMatches[i]) < mdMaxPixelErrorSquared)
+        double dScore = MLESACScore(mm3BestHomography, vMatches[i]);
+        if(dScore < mdMaxPixelErrorSquared)
             vMatchesInliers.push_back(vMatches[i]);
     }
 

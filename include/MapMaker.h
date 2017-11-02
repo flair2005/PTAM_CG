@@ -19,6 +19,7 @@ public:
 
 private:
     ATANCamera mCamera;
+    double mdWiggleScale;
 };
 
 #endif
