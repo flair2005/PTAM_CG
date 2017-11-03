@@ -1,57 +1,26 @@
 #include "Common.h"
 #include "ImgProc.h"
 
-int MiniPatch::mnHalfPatchSize = 4;
-int MiniPatch::mnRange = 10;
-int MiniPatch::mnMaxSSD = 9999;
-
 int MiniPatch::SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos)
 {
-    if(!ImgProc::IsInImageWithBorder(img,ptPos,mnHalfPatchSize))
+    if(!IsInImageWithBorder(img, ptPos, mSizePatch.width/2+1, mSizePatch.height/2+1))
         return GS::RET_FAILED;
 
     cv::Rect rectROI;
-    rectROI.width = 2*mnHalfPatchSize+1;
-    rectROI.height = 2*mnHalfPatchSize+1;
+    rectROI.width = mSizePatch.width;
+    rectROI.height = mSizePatch.height;
     rectROI.x = ptPos.x-rectROI.width/2;
     rectROI.y = ptPos.y-rectROI.height/2;
-    mimOrigPatch = img(rectROI);
+    mImgMiniPatch = img(rectROI);
 
-    return GS::RET_SUCESS;
-}
-
-int MiniPatch::SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD)
-{
-    if(!ImgProc::IsInImageWithBorder(img,pt,mnHalfPatchSize))
-        return GS::RET_FAILED;
-
-    cv::Point2i ptImgBase(pt.x-mnHalfPatchSize, pt.y-mnHalfPatchSize);
-
-    int nSumSqDiff = 0;
-    unsigned int nRows = mimOrigPatch.rows;
-    unsigned int nCols = mimOrigPatch.cols;
-    for(unsigned int h=0; h<nRows; ++h)
-    {
-        const unsigned char *pImage    = img.ptr<uchar>(ptImgBase.y+h);
-        const unsigned char *pTemplate = mimOrigPatch.ptr<uchar>(h);
-        for(unsigned int w=0; w<nCols; ++w)
-        {
-            int nDiff = pImage[ptImgBase.x+w]-pTemplate[w];
-            nSumSqDiff += nDiff * nDiff;
-        }
-    }
-    nSSD = nSumSqDiff;
     return GS::RET_SUCESS;
 }
 
 // Find a patch by searching at FAST corners in an input image
 // If available, a row-corner LUT is used to speed up search through the
 // FAST corners
-bool MiniPatch::FindPatch(cv::Point2i &ptPos,
-                          cv::Mat &img,
-                          int nRange,
-                          std::vector<cv::Point2i> &vCorners,
-                          std::vector<int> *pvRowLUT)
+int MiniPatch::FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange, std::vector<cv::Point2i> &vCorners,
+                         int nMaxSSD, std::vector<int> *pvRowLUT)
 {   
     cv::Point2i ptBBoxTL = ptPos - cv::Point2i(nRange, nRange);
     cv::Point2i ptBBoxBR = ptPos + cv::Point2i(nRange, nRange);
@@ -75,7 +44,7 @@ bool MiniPatch::FindPatch(cv::Point2i &ptPos,
     }
 
     cv::Point2i ptBest;
-    int nBestSSD = mnMaxSSD + 1;
+    int nBestSSD = nMaxSSD + 1;
     for(; i!=vCorners.end(); i++)
     {
         if(i->x < ptBBoxTL.x  || i->x > ptBBoxBR.x)
@@ -84,21 +53,21 @@ bool MiniPatch::FindPatch(cv::Point2i &ptPos,
             break;
 
         int nSSD = 0;
-        if(GS::RET_FAILED == SSDAtPoint(img, *i, nSSD))
-            nSSD = mnMaxSSD + 1;
+        if(GS::RET_FAILED == SSDAtPoint(img, *i, mImgMiniPatch, nSSD))
+            nSSD = nMaxSSD + 1;
         if(nSSD < nBestSSD)
         {
             ptBest = *i;
             nBestSSD = nSSD;
         }
     }
-    if(nBestSSD < mnMaxSSD)
+    if(nBestSSD < nMaxSSD)
     {
         ptPos = ptBest;
-        return true;
+        return GS::RET_SUCESS;
     }
     else
-        return false;
+        return GS::RET_FAILED;
 }
 
 

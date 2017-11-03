@@ -55,12 +55,12 @@ TEST(MiniPatch,SSDAtPoint)
     MiniPatch miniPatch;
     ASSERT_EQ(GS::RET_SUCESS,miniPatch.SampleFromImage(imgBW1,cv::Point2i(147,346)));
     int nSSD = 0;
-    miniPatch.SSDAtPoint(imgBW2,cv::Point2i(137,336),nSSD);
+    miniPatch.SSDAtPoint(imgBW2, cv::Point2i(137,336), miniPatch.mImgMiniPatch, nSSD);
     std::cout << "nSSD: " << nSSD << std::endl;
     //ASSERT_EQ(nSSD,518389);
 
     std::ofstream outfile("outfileImgTEST.txt");
-    cv::Mat matOrig = miniPatch.mimOrigPatch;
+    cv::Mat matOrig = miniPatch.mImgMiniPatch;
     for(int h=0; h<matOrig.rows; h++)
     {
         unsigned char *pData = matOrig.ptr<uchar>(h);

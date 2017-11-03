@@ -58,7 +58,7 @@ int KeyFrame::MakeKeyFrame_Rest()
         Feature2dDetector::DetectFASTCorners(lev.im, lev.vMaxCorners, 10, true);
         for(std::vector<cv::Point2i>::iterator i=lev.vMaxCorners.begin(); i!=lev.vMaxCorners.end(); i++)
         {
-            if(!ImgProc::IsInImageWithBorder(lev.im,*i, 10))
+            if(!ImgProc::IsInImageWithBorder(lev.im,*i, 10, 10))
                 continue;
             double dSTScore = 0.0;
             Feature2dDetector::FindShiTomasiScoreAtPoint(lev.im,*i,dSTScore,3);

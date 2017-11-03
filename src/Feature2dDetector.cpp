@@ -45,7 +45,7 @@ int Feature2dDetector::FindShiTomasiScoreAtPoint(const cv::Mat &image, cv::Point
     {
         return GS::RET_FAILED;
     }
-    if(!ImgProc::IsInImageWithBorder(image,ptCenter,nHalfBoxSize+1))
+    if(!IsInImageWithBorder(image,ptCenter,nHalfBoxSize+1,nHalfBoxSize+1))
         return GS::RET_FAILED;
 
     double dXX = 0;

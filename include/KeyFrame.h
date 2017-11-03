@@ -10,15 +10,15 @@ const unsigned int LEVELS = 4;
 struct Candidate
 {
     cv::Point2i ptLevelPos;
-    cv::Point2f ptRootPos;
+    cv::Point2d ptRootPos;
     double dSTScore;
 };
 
 struct Measurement
 {
-    int nLevel;   // Which image level?
+    unsigned int nLevel;   // Which image level?
     bool bSubPix; // Has this measurement been refined to sub-pixel level?
-    cv::Point2i pt2fRootPos;  // Position of the measurement, REFERED TO PYRAMID LEVEL ZERO
+    cv::Point2d ptRootPos;  // Position of the measurement, REFERED TO PYRAMID LEVEL ZERO
     enum {SRC_TRACKER, SRC_REFIND, SRC_ROOT, SRC_TRAIL, SRC_EPIPOLAR} Source; // Where has this measurement come frome?
 };
 

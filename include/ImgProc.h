@@ -5,11 +5,15 @@
 #include <opencv2/core/types.hpp>
 #include <opencv2/core/mat.hpp>
 
+#include "Common.h"
+
 class ImgProc
 {
 public:
-    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2i &pt, int border=10);
+    static bool IsInImageWithBorder(const cv::Mat &image, const cv::Point2i &pt, int borderX=10, int borderY=10);
     static int HalfSample(const cv::Mat &imgSrc, cv::Mat &imgDst);
+    int SumOfPixels(const cv::Mat &img, int &nSum, int &nSumSq);
+    int SSDAtPoint(const cv::Mat &img, const cv::Point2i &ptPos, const cv::Mat &imgPatch, int &nSSD);
 };
 
 class Feature2dDetector : public ImgProc
@@ -24,16 +28,16 @@ public:
 class MiniPatch : public ImgProc
 {
 public:
-    cv::Mat mimOrigPatch;           // Original pixels
-    static int mnHalfPatchSize;     // How big is the patch?
-    static int mnRange;             // How far to search?
-    static int mnMaxSSD;            // Max SSD for matches?
+    MiniPatch():mSizePatch(GS::Size(9,9)){}
+    MiniPatch(GS::Size size):mSizePatch(size){}
+    cv::Mat mImgMiniPatch;//Original pixels
 
     int SampleFromImage(const cv::Mat &img, const cv::Point2i &ptPos);
-    int SSDAtPoint(const cv::Mat &img, const cv::Point2i &pt, int &nSSD);
-    bool FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange,
-                   std::vector<cv::Point2i> &vCorners,
-                   std::vector<int> *pvRowLUT = NULL);
+    int FindPatch(cv::Point2i &ptPos, cv::Mat &img, int nRange, std::vector<cv::Point2i> &vCorners,
+                  int nMaxSSD = 9999, std::vector<int> *pvRowLUT = NULL);
+
+protected:
+    GS::Size mSizePatch;
 };
 
 #endif

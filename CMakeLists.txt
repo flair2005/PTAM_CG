@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall -g")
 
+################ Dependencies ################
+
 # OpenCV
 find_package( OpenCV REQUIRED COMPONENTS opencv_core opencv_imgcodecs opencv_imgproc opencv_features2d opencv_calib3d)
 if(OpenCV_FOUND)
@@ -11,23 +13,11 @@ if(OpenCV_FOUND)
     link_libraries( ${OpenCV_LIBS} )
 endif()
 
-## Eigen
-#find_package(Eigen3 REQUIRED)
-#if(EIGEN3_FOUND)
-#    include_directories( ${EIGEN3_INCLUDE_DIR} )
-#endif()
-
 # Sophus
 find_package( Sophus REQUIRED )
 if(Sophus_FOUND)
     include_directories( ${Sophus_INCLUDE_DIRS} )
     link_libraries( ${Sophus_LIBRARIES} )
-endif()
-
-# OpenGL
-find_package(OpenGL REQUIRED)
-if(OPENGL_FOUND)
-    link_libraries( ${OPENGL_LIBRARY} )
 endif()
 
 # GLEW
@@ -60,10 +50,11 @@ set( SRC_LIST_PTAM
     ${PROJECT_SOURCE_DIR}/src/MiniPatch.cpp
     ${PROJECT_SOURCE_DIR}/src/ATANCamera.cpp
     ${PROJECT_SOURCE_DIR}/src/Feature2dDetector.cpp
-    ${PROJECT_SOURCE_DIR}/src/Homography.cpp )
+    ${PROJECT_SOURCE_DIR}/src/Homography.cpp
+    ${PROJECT_SOURCE_DIR}/src/PatchFinder.cpp )
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp ${SRC_LIST_PTAM})
 
-################ gtest ################
+################ google test ################
 enable_testing()
 find_package(GTest REQUIRED)
 if(GTest_FOUND)

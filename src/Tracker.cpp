@@ -32,8 +32,6 @@ void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 
 void Tracker::TrackForInitialMap()
 {
-    MiniPatch::mnMaxSSD = mpJsonConfig->GetInt("Tracker.MiniPatchMaxSSD");
-
     if(mnInitialStage == TRAIL_TRACKING_NOT_STARTED)
     {
         if(mnFrame==5)
@@ -73,8 +71,6 @@ void Tracker::TrailTracking_Start()
     for(unsigned int i=0; i<mCurrentKF.aLevels[0].vCandidates.size(); i++)
     {
         Candidate &c = mCurrentKF.aLevels[0].vCandidates[i];
-        if(!ImgProc::IsInImageWithBorder(mCurrentKF.aLevels[0].im,c.ptLevelPos,MiniPatch::mnHalfPatchSize))
-            continue;
         vCornersAndSTScores.push_back(std::pair<double,cv::Point2i>(c.dSTScore, c.ptLevelPos));
     }
 
@@ -83,8 +79,6 @@ void Tracker::TrailTracking_Start()
     int nToAdd = mpJsonConfig->GetInt("Tracker.MaxInitialTrails");
     for(unsigned int i = 0; i<vCornersAndSTScores.size() && nToAdd > 0; i++)
     {
-        if(!ImgProc::IsInImageWithBorder(mCurrentKF.aLevels[0].im,vCornersAndSTScores[i].second,MiniPatch::mnHalfPatchSize))
-            continue;
         Trail t;
         t.mPatch.SampleFromImage(mCurrentKF.aLevels[0].im, vCornersAndSTScores[i].second);
         t.ptInitialPos = vCornersAndSTScores[i].second;
@@ -99,6 +93,7 @@ void Tracker::TrailTracking_Start()
 int Tracker::TrailTracking_Advance()
 {
     int nGoodTrails = 0;
+    int nMaxSSD = mpJsonConfig->GetInt("Tracker.MiniPatchMaxSSD");
     MiniPatch BackwardsPatch;
     Level &lCurrentFrame = mCurrentKF.aLevels[0];
     Level &lPreviousFrame = mPreviousFrameKF.aLevels[0];
@@ -110,22 +105,22 @@ int Tracker::TrailTracking_Advance()
         Trail &trail = *i;
         cv::Point2i ptStart = trail.ptCurrentPos;
         cv::Point2i ptEnd = ptStart;
-        bool bFound = trail.mPatch.FindPatch(ptEnd, lCurrentFrame.im, 10, lCurrentFrame.vCorners);
-        if(bFound)
+        int nFound = trail.mPatch.FindPatch(ptEnd, lCurrentFrame.im, 10, lCurrentFrame.vCorners, nMaxSSD);
+        if(nFound == GS::RET_SUCESS)
         {
             BackwardsPatch.SampleFromImage(lCurrentFrame.im, ptEnd);
             cv::Point2i ptBackWardsFound = ptEnd;
-            bFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners);
+            nFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners, nMaxSSD);
             cv::Point2i diffPts = ptBackWardsFound - ptStart;
             if(diffPts.dot(diffPts) > 2)
-                bFound = false;
+                nFound = GS::RET_FAILED;
             trail.ptCurrentPos = ptEnd;
             nGoodTrails++;
         }
         if(mbDraw)
         {
             GS::RGB rgbStart, rgbEnd;
-            if(bFound)
+            if(nFound == GS::RET_SUCESS)
             {
                 rgbStart = GS::RGB(1,1,0);
                 rgbEnd   = GS::RGB(1,0,0);
@@ -136,7 +131,7 @@ int Tracker::TrailTracking_Advance()
             }
             mpPangolinWindow->DrawLines(trail.ptInitialPos, rgbStart, trail.ptCurrentPos, rgbEnd, 2.0f);
         }
-        if(!bFound)
+        if(nFound == GS::RET_FAILED)
         {
             mlTrails.erase(i);
         }

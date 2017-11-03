@@ -1,10 +1,21 @@
 #include "MapMaker.h"
 
 #include <iostream>
+#include <set>
 
 #include "Common.h"
 #include "MathUtility.h"
 #include "Homography.h"
+
+struct MapMakerData
+{
+    std::set<KeyFrame*> sMeasurementKFs;   // Which keyframes has this map point got measurements in?
+    std::set<KeyFrame*> sNeverRetryKFs;    // Which keyframes have measurements failed enough so I should never retry?
+    inline int GoodMeasCount()
+    {
+        return sMeasurementKFs.size();
+    }
+};
 
 MapMaker::MapMaker(const ATANCamera &cam):
     mCamera(cam)
