@@ -74,7 +74,8 @@ void Tracker::TrailTracking_Start()
         vCornersAndSTScores.push_back(std::pair<double,cv::Point2i>(c.dSTScore, c.ptLevelPos));
     }
 
-    std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_compare);
+    std::stable_sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(),
+                     [](const std::pair<double,cv::Point2i> &a,const std::pair<double,cv::Point2i> &b){return a.first > b.first;});
 
     int nToAdd = mpJsonConfig->GetInt("Tracker.MaxInitialTrails");
     for(unsigned int i = 0; i<vCornersAndSTScores.size() && nToAdd > 0; i++)

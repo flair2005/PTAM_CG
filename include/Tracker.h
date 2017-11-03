@@ -46,11 +46,5 @@ private:
     int TrailTracking_Advance();
 
     void Reset();
-
-private:
-    inline static bool sort_compare(const std::pair<double,cv::Point2i> &a,const std::pair<double,cv::Point2i> &b)
-    {
-        return a.first > b.first;
-    }
 };
 #endif

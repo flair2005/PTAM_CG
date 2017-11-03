@@ -316,7 +316,8 @@ int Homography::ChooseBestDecomposition(
         decom.nScore = -nPositive;
     }
 
-    std::sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end(), sort_compare);
+    std::stable_sort(vHomographyDecompositions.begin(), vHomographyDecompositions.end(),
+                     [](const HomographyDecomposition &a,const HomographyDecomposition &b){return a.nScore < b.nScore;});
     vHomographyDecompositions.resize(4);
 
     for(unsigned char i=0; i<vHomographyDecompositions.size(); ++i)
