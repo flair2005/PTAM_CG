@@ -4,6 +4,7 @@
 
 #include <opencv2/core/mat.hpp>
 
+class JsonConfig;
 class GLWindowPangolin;
 class VideoSource;
 class ATANCamera;
@@ -19,6 +20,7 @@ public:
     void Update(const cv::Mat &imgBW, const cv::Mat &imgRGB);
 
 private:
+    JsonConfig *mpJsonConfig;
     GLWindowPangolin *mpPangolinWindow;
     VideoSource *mpVideoSource;
     ATANCamera *mpCamera;

@@ -8,6 +8,7 @@
 #include <list>
 #include <sophus/se3.h>
 
+class JsonConfig;
 class GLWindowPangolin;
 class MapMaker;
 
@@ -21,7 +22,7 @@ struct Trail
 class Tracker
 {
 public:
-    Tracker(GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker);
+    Tracker(JsonConfig *pJsonConfig, GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker);
     ~Tracker(){}
 
     void TrackFrame(const cv::Mat &imgBW, bool bDraw);
@@ -35,6 +36,7 @@ private:
     std::list<Trail> mlTrails;
     enum{TRAIL_TRACKING_NOT_STARTED,TRAIL_TRACKING_STARTED,TRAIL_TRACKING_COMPLETE} mnInitialStage;
 
+    JsonConfig *mpJsonConfig;
     GLWindowPangolin *mpPangolinWindow;
     MapMaker &mMapMaker;
     Sophus::SE3 mse3CamFromWorld;

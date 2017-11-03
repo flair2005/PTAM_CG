@@ -2,10 +2,12 @@
 
 #include <utility>
 
+#include "JsonConfig.h"
 #include "GLWindowPangolin.h"
 #include "MapMaker.h"
 
-Tracker::Tracker(GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker):
+Tracker::Tracker(JsonConfig *pJsonConfig, GLWindowPangolin *pWindowPangolin, MapMaker &mapmaker):
+    mpJsonConfig(pJsonConfig),
     mpPangolinWindow(pWindowPangolin),
     mMapMaker(mapmaker)
 {
@@ -30,9 +32,7 @@ void Tracker::TrackFrame(const cv::Mat &imgBW, bool bDraw)
 
 void Tracker::TrackForInitialMap()
 {
-//    static gvar3<int> gvnMaxSSD("Tracker.MiniPatchMaxSSD", 100000, SILENT);
-//    MiniPatch::mnMaxSSD = *gvnMaxSSD;
-    MiniPatch::mnMaxSSD = 100000;
+    MiniPatch::mnMaxSSD = mpJsonConfig->GetInt("Tracker.MiniPatchMaxSSD");
 
     if(mnInitialStage == TRAIL_TRACKING_NOT_STARTED)
     {
@@ -71,7 +71,7 @@ void Tracker::TrailTracking_Start()
 
     std::vector<std::pair<double,cv::Point2i> > vCornersAndSTScores;
     for(unsigned int i=0; i<mCurrentKF.aLevels[0].vCandidates.size(); i++)
-    {                                                                     // so that we can choose the image corners with max ST score
+    {
         Candidate &c = mCurrentKF.aLevels[0].vCandidates[i];
         if(!ImgProc::IsInImageWithBorder(mCurrentKF.aLevels[0].im,c.ptLevelPos,MiniPatch::mnHalfPatchSize))
             continue;
@@ -80,7 +80,7 @@ void Tracker::TrailTracking_Start()
 
     std::sort(vCornersAndSTScores.begin(), vCornersAndSTScores.end(), sort_compare);
 
-    int nToAdd = 1000;//GV2.GetInt("MaxInitialTrails", 1000, SILENT);
+    int nToAdd = mpJsonConfig->GetInt("Tracker.MaxInitialTrails");
     for(unsigned int i = 0; i<vCornersAndSTScores.size() && nToAdd > 0; i++)
     {
         if(!ImgProc::IsInImageWithBorder(mCurrentKF.aLevels[0].im,vCornersAndSTScores[i].second,MiniPatch::mnHalfPatchSize))
@@ -113,7 +113,6 @@ int Tracker::TrailTracking_Advance()
         bool bFound = trail.mPatch.FindPatch(ptEnd, lCurrentFrame.im, 10, lCurrentFrame.vCorners);
         if(bFound)
         {
-            // Also find backwards in a married-matches check
             BackwardsPatch.SampleFromImage(lCurrentFrame.im, ptEnd);
             cv::Point2i ptBackWardsFound = ptEnd;
             bFound = BackwardsPatch.FindPatch(ptBackWardsFound, lPreviousFrame.im, 10, lPreviousFrame.vCorners);

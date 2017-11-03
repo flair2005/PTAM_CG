@@ -44,6 +44,9 @@ if(Pangolin_FOUND)
     link_libraries( ${Pangolin_LIBRARIES} )
 endif()
 
+## JsonCpp
+link_libraries(jsoncpp)
+
 ################ PTAM-GS ################
 include_directories(${PROJECT_SOURCE_DIR}/include)
 set( SRC_LIST_PTAM
